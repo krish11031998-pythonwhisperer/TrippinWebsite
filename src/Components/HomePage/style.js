@@ -67,13 +67,13 @@ export const HomeHeaderImage = styled.div`
     flex-grow: 1;
     width:50%;
     height:100%;
-    img{
+    /* img{
         width: calc(100% - 100px);
         height: calc(100% - 100px);
         margin: 50px;
         border-radius: 30px;
         object-fit: cover;
-    }
+    } */
 
 `
 
