@@ -1,6 +1,7 @@
 import React, {useState,useEffect} from 'react'
 import { HomeContainer, HomeHeaderArea, HomeHeading, HomePageTab, VideoContainer,HomeHeaderImage } from './style';
 import FeaturePage from '../FeaturesPage'
+import Introduction from '../Introduction'
 import ImageCarousel from '../PhotosZStack'
 const Index = () => {
     let url = 'videos/video-1.mp4'
@@ -29,6 +30,7 @@ const Index = () => {
                 </HomeContainer>
                 
             </HomePageTab>
+            <Introduction/>
             <FeaturePage/>
         </>
         

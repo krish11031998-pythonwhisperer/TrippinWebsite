@@ -19,6 +19,12 @@ export const GlobalStyle = createGlobalStyle`
     }
 `
 
+export const Container = styled.div`
+    width:100%;
+    height:100vh;
+    padding: 1px 0;
+`
+
 export const Colors = {
     primary:'#abaab8',
     secondary:'#212334',

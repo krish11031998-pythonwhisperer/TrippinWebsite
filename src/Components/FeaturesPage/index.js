@@ -148,8 +148,8 @@ const FeatureCard = (props) => {
         let {clientX : x, clientY :y} = e
         x = (x - cardDimension.left);
         y = (y - cardDimension.top);
-        setXOff((x - window_w)/15)
-        setYOff(-(y - window_h)/15)
+        setXOff((x - window_w)/30)
+        setYOff(-(y - window_h)/30)
     }
     return <Cards 
                 ref = {cardRef}
