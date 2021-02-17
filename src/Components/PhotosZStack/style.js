@@ -1,8 +1,9 @@
 import styled from 'styled-components'
 
 export const ImageStackContainer = styled.div`
-    width: calc(100% - 0px);
-    height: calc(100% - 0px);
+    flex: 0 1 20%;
+    width: 100%;
+    height: 100%;
     /* margin:25px; */
 
     padding: 10px 0px;

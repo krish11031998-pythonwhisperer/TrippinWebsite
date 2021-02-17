@@ -1,10 +1,11 @@
 import {Colors as colors} from '../../style'
-import traveller  from './lottieFiles/traveller-cycle.json'
-import  story from './lottieFiles/story.json'
-import explore from './lottieFiles/explore.json'
+import traveller  from '../Helper/LottiePlayer/lottieFiles/traveller-cycle.json'
+import  story from '../Helper/LottiePlayer/lottieFiles/story.json'
+import explore from '../Helper/LottiePlayer/lottieFiles/explore.json'
 let data =  [{
     large:true,
     color: colors.green,
+    // color: colors.primary,
     heading:"AR",
     description:"AR is highly beneficial for travel app development and it is emerging as a useful tool for businesses and marketers. It allows them to transform the way customers observe their surroundings. AR-based travel apps quickly engage customers with its interactivity and renders an immersive user experience.",
     // lottieCard:"/Users/krishnavenkatramani/Desktop/React/trippin/public/lotties/traveller-cycle.json",
@@ -16,22 +17,26 @@ let data =  [{
 },{
     large:false,
     color: colors.orange,
+    // color: colors.primary,
     heading:"Tours",
     description:"We want to give the content creators the freedom to design tours of their style without impeding their creativity"
 },{
     large:false,
     color: colors.indigo,
+    // color: colors.primary,
     heading:"Community",
     description:"Create a friendly community so that travellers can engage with the locals to provide a more authentic experience"
 },{
     large:true,
     color: colors.red,
+    // color: colors.primary,
     heading:"Playful Exploration",
     description:"Gamifications elements within the app to provide a more innovative and interactive style of exploration while rewarding the users",
     lottieCard:explore,
 },{
     large:true,
     color: colors.tomato,
+    // color: colors.primary,
     heading:"Stories",
     description:"Help Travel enthusiasts to voice out their stories and help people explore the world through their eyes",
     lottieCard:story
@@ -39,6 +44,7 @@ let data =  [{
 {
     large:false,
     color: colors.cyan,
+    // color: colors.primary,
     heading:"Local Market",
     description:"Support the local market"
 }

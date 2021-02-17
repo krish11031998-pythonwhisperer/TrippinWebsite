@@ -25,7 +25,7 @@ export const ColumnCards = styled.div`
     flex: 0 1 ${({isSelected}) => isSelected ? 100 : 31}%;
     display:flex;
     flex-flow: column nowrap;
-    justify-content:space-around;
+    justify-content:space-between;
     align-items:center;
     transition: all 0.75s ease-in-out;
     /* perspective: 600px; */
@@ -34,19 +34,24 @@ export const ColumnCards = styled.div`
 export const Cards = styled.div`
     flex: 0 1 ${({large,selectedCard}) =>  selectedCard ? 100 : large ? 65 : 30}%;
     max-height: ${({large,selectedCard}) =>  selectedCard ? 100 : large ? 65 : 30}%;
-    width:100%;
+    margin:10px;
+    /* padding:10px; */
+    width:calc(100% - 20px);
     max-width:100%;
     display:flex;
     flex-flow: row nowrap;
+    
     justify-content:flex-start;
     align-items: flex-start;
-    background-color:${({color}) => color ? color : 'transparent'};
+    /* background-color:${({color,hover}) => !hover && color ? color : hover && color ? colors.secondary : 'transparent'}; */
+    background-color:${({color,hover}) => hover ? color : colors.primary};
     border-radius: 30px;
     color: white;
     box-shadow: 0 0 20px rgba(255,255,255,0.2);
-    transition: all 0.1s ease-in-out;
+    transition: all 0.3s ease-in;
     padding:20px;
-    transform : scale(${({hover,otherCard}) => hover ? 1.1 : otherCard ? 0.95 : 1}) rotateX(${({yOff,hover,selectedCard}) => hover && !selectedCard ? yOff : 0}deg) rotateY(${({xOff,hover,selectedCard}) => hover && !selectedCard ? xOff : 0}deg);
+    opacity: ${({hover,otherCard}) => !hover && otherCard ? 0.5 : 1};
+    transform : scale(${({hover,otherCard}) => hover ? 1.075 : otherCard ? 0.9 : 1}) rotateX(${({yOff,hover,selectedCard}) => hover && !selectedCard ? yOff : 0}deg) rotateY(${({xOff,hover,selectedCard}) => hover && !selectedCard ? xOff : 0}deg);
     transform-style: preserve-3d;
     perspective: 1000px;
     *:not(Lottie){
@@ -80,6 +85,11 @@ export const CardContent = styled.div`
     flex-flow:column nowrap;
     justify-content:flex-start;
     align-items: flex-start;
+
+    text{
+        flex:0 1 auto;
+        max-height:40%;
+    }
 `
 
 export const FeatureRow = styled.div`

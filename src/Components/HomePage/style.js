@@ -30,7 +30,7 @@ export const HomeContainer = styled.div`
 
 
 export const HomeHeaderArea = styled.div`
-    flex-grow: 1;
+    flex: 0 1 100%;
     display:flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
@@ -38,8 +38,8 @@ export const HomeHeaderArea = styled.div`
 `
 
 export const HomeHeading = styled.div`
-    flex-grow: 2;
-    width:75%;
+    flex: 0 1 75%;
+    width:100%;
     height:100%;
     display:flex;
     flex-flow: column nowrap;

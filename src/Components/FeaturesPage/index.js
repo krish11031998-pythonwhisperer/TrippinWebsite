@@ -2,7 +2,8 @@ import React,{useState,useEffect, useRef} from 'react'
 import { Cards, ColumnCards, FeaturesContainer, FeaturesPageContainer,CardContent } from './style'
 import {Colors as colors} from '../../style'
 import data from './data'
-import Lottie from 'react-lottie'
+// import Lottie from 'react-lottie'
+import LottiePlayer from '../Helper/LottiePlayer'
 
 const Index = () => {
     let cards = []
@@ -28,7 +29,7 @@ const Index = () => {
             cards.push(temp)
             temp = []
         }
-        console.log(cards)
+        // console.log(cards)
         setColCards(cards)
     },[])
 
@@ -119,15 +120,20 @@ const FeatureCard = (props) => {
         
     },[isHover])
 
+    // useEffect(() => {
+    //     console.log(`xOff : ${xOff} and yOff : ${yOff}`);
+    // }, [xOff,yOff])
+
     useEffect(() => {
         if(cardRef.current){
+            // console.log(cardRef.current)
             setCardDimension(cardRef.current.getBoundingClientRect())
         }
-    },[cardRef.current])
+    },[cardRef.current,isSelected])
 
     var lottieCard = <>
         {card.large && card.lottieCard ? 
-            <LottiePlayer lottieCard={card.lottieCard} hover={isSelected} cardDim={cardDimension} factor={card.factor}/>
+            <LottiePlayer lottieCard={card.lottieCard} hover={isSelected} cardDim={cardDimension} factor={card.factor} cardDim={cardDimension}/>
             :   
             <></>
         }
@@ -143,38 +149,52 @@ const FeatureCard = (props) => {
         if(hoverCard != card.id){
             changeHoverCard(e,card.id)
         }
-        let window_w = cardDimension.width/2
-        let window_h = cardDimension.height/2
         let {clientX : x, clientY :y} = e
-        x = (x - cardDimension.left);
-        y = (y - cardDimension.top);
-        setXOff((x - window_w)/30)
-        setYOff(-(y - window_h)/30)
+        let {width,height,top,left} = cardDimension
+        let {pageYOffset:pyoff,innerHeight} = window
+        // console.log(`top : ${top} and innerHeight : ${innerHeight}`);
+        let window_w = width/2
+        let window_h = height/2
+        let _top = top > innerHeight ? top - pyoff : top
+        x = (x - left)
+        y = (y - _top)
+        xOff = (x - window_w)/50
+        yOff = -(y - window_h)/50
+        setXOff(xOff)
+        setYOff(yOff)
     }
     return <Cards 
                 ref = {cardRef}
                 large={card.large} 
                 color={card.color} 
                 hover={isHover} 
-                // hover={false} 
                 selectedCard={isSelected}
                 otherCard={otherHover}
                 xOff={xOff}
                 yOff={yOff}
                 onMouseMove={(e) => {changeOffsets(e)}}
-                onMouseLeave={(e) => {changeHoverCard(e,0);setYOff(0);setXOff(0)}}
+                onMouseLeave={(e) => {
+                    changeHoverCard(e,0);
+                    setYOff(0);
+                    setXOff(0)
+                }}
                 onClick={() => {onClick(card.id)}}
                 isLottie={card.lottieCard != null}
             >
                 <CardContent 
                     isText={true} 
                     selected={isSelected}
+                    // onMouseMove={(e) => {changeOffsets(e)}}
+                    // onMouseLeave={(e) => {
+                    //     changeHoverCard(e,0);
+                    //     setYOff(0);
+                    //     setXOff(0)
+                    // }}
+                    // onClick={() => {onClick(card.id)}}
                 >
                     <h1>{card.heading}</h1>
                     <text>{card.description}</text>
                     {!isSelected ? lottieCard : <></>}
-                    {/* <br/>
-                    <text>{`clientX : ${xOff} clientY  : ${yOff}`}</text> */}
                     {showMainText && isSelected ? card.mainText ? <ul>{card.mainText.map(point => <li><text>{point}</text></li>)}</ul> : <text></text> : <></>}
                 </CardContent>
                 {isSelected ? 
@@ -185,48 +205,6 @@ const FeatureCard = (props) => {
                 }
     
             </Cards>
-}
-
-const LottiePlayer = (props) =>{
-    let [animatableData,setAnimatableData] = useState()
-    let {lottieCard,hover,factor,cardDim} = props
-    let [cardWidth,setCardWidth] = useState(0)
-    let checkHeight = () => {
-        let {innerWidth:width} = window
-        setCardWidth(width * 0.15)
-    }
-
-    useEffect(() => {
-        if (lottieCard){
-            setAnimatableData(lottieCard)
-        }
-        checkHeight()
-    },[])
-
-    window.addEventListener('resize',checkHeight)
-
-    
-
-    const defaultOptions = {
-        loop: true,
-        autoplay: false,
-        animationData: animatableData,
-        rendererSettings: {
-          preserveAspectRatio: "xMidYMid slice"
-        },
-        
-    };
-
-    return animatableData ? <Lottie 
-            options={defaultOptions} 
-            height={cardWidth}
-            width={cardWidth}
-            isPaused={!hover}
-        />
-        :
-        <div>
-            Loading...
-        </div>
 }
 
 
