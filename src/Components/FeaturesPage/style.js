@@ -46,12 +46,60 @@ export const CardOutline = styled.div`
 
 `
 
-export const Cards = styled(motion.div)`
+// export const Cards = styled(motion.div)`
+//     flex: 0 1 ${({large,selectedCard,otherSelected}) =>  selectedCard ? 100 : !otherSelected ? large ? 65 : 30 : 0}%;
+//     max-height: ${({large,selectedCard,otherSelected}) =>  selectedCard ? 100 : !otherSelected ? large ? 65 : 30 : 0}%;
+//     margin:10px;
+//     padding:10px;
+//     /* width:calc(100% - margin*2); */
+//     width:${({selectedCard,otherSelected}) => selectedCard ? 100 : !otherSelected ? 100 : 0}%;
+//     /* width:100%; */
+//     display:flex;
+//     flex-flow: row nowrap;
+    
+//     justify-content:flex-start;
+//     align-items: flex-start;
+//     /* background-color:${({color,hover}) => !hover && color ? color : hover && color ? colors.secondary : 'transparent'}; */
+//     background-color:${({color,hover,selectedCard}) => hover || selectedCard ? color : colors.primary};
+//     border-radius: 30px;
+//     color: white;
+//     box-shadow: 0 0 20px rgba(255,255,255,${({hover}) => hover ? 0.2 : 0});
+//     transition: all 0.3s ease-in;
+//     padding:20px;
+//     opacity: ${({hover,otherCard}) => !hover && otherCard ? 0.5 : 1};
+//     /* will-change:transform; */
+//     /* transform : scale(${({hover,otherCard,selectedCard}) => hover && !selectedCard ? 1.05 : otherCard ? 0.9 : 1}) rotateX(${({yOff,hover,selectedCard}) => hover && !selectedCard ? yOff : 0}deg) rotateY(${({xOff,hover,selectedCard}) => hover && !selectedCard ? xOff : 0}deg); */
+//     /* transform :  rotateX(${({yOff,hover,selectedCard}) => hover && !selectedCard ? yOff : 0}deg) rotateY(${({xOff,hover,selectedCard}) => hover && !selectedCard ? xOff : 0}deg); */
+//     /* transform : scale(${({hover,otherCard,selectedCard}) => hover && !selectedCard ? 1.05 : otherCard ? 0.9 : 1}); */
+//     transform-style: preserve-3d;
+//     perspective: 1000px;
+//     *:not(Lottie){
+//         padding: 10px;
+//     }
+//     display:${({selectedCard,otherSelected}) => !selectedCard && otherSelected && 'none'};
+//     text{
+//         /* padding-left:25px; */
+//         font-size: ${({selectedCard}) => selectedCard ? 150 : 100}%;
+//         -webkit-box-decoration-break: clone;
+//         box-decoration-break: clone;
+        
+//     }
+//     ul{
+//         list-style:none;
+//         padding:10px 0;
+//         li{
+//             padding: 10px 0;
+//         }
+//     }
+    
+//     h1{
+//         font-family: 'Bungee Shade',cursive;
+//     }
+// `
+
+export const Cards = styled(animated.div)`
     flex: 0 1 ${({large,selectedCard,otherSelected}) =>  selectedCard ? 100 : !otherSelected ? large ? 65 : 30 : 0}%;
     max-height: ${({large,selectedCard,otherSelected}) =>  selectedCard ? 100 : !otherSelected ? large ? 65 : 30 : 0}%;
-    /* flex: 0 1 ${({large}) =>  large ? 65 : 30}%;
-    max-height: ${({large}) => large ? 65 : 30}%; */
-    /* height: 100%; */
     margin:10px;
     padding:10px;
     /* width:calc(100% - margin*2); */
@@ -70,12 +118,12 @@ export const Cards = styled(motion.div)`
     transition: all 0.3s ease-in;
     padding:20px;
     opacity: ${({hover,otherCard}) => !hover && otherCard ? 0.5 : 1};
-    will-change:transform;
-    /* transform : scale(${({hover,otherCard,selectedCard}) => hover && !selectedCard ? 1.05 : otherCard ? 0.9 : 1}) rotateX(${({yOff,hover,selectedCard}) => hover && !selectedCard ? yOff : 0}deg) rotateY(${({xOff,hover,selectedCard}) => hover && !selectedCard ? xOff : 0}deg); */
-    transform : rotateX(${({yOff,hover,selectedCard}) => hover && !selectedCard ? yOff : 0}deg) rotateY(${({xOff,hover,selectedCard}) => hover && !selectedCard ? xOff : 0}deg);
+    /* will-change:transform; */
+    transform : scale(${({hover,otherCard,selectedCard}) => hover || selectedCard ? 1 : otherCard && 0.9}) rotateX(${({yOff,hover,selectedCard}) => hover && !selectedCard ? yOff : 0}deg) rotateY(${({xOff,hover,selectedCard}) => hover && !selectedCard ? xOff : 0}deg);
+    /* transform :  rotateX(${({yOff,hover,selectedCard}) => hover && !selectedCard ? yOff : 0}deg) rotateY(${({xOff,hover,selectedCard}) => hover && !selectedCard ? xOff : 0}deg); */
     /* transform : scale(${({hover,otherCard,selectedCard}) => hover && !selectedCard ? 1.05 : otherCard ? 0.9 : 1}); */
-    transform-style: preserve-3d;
-    perspective: 1000px;
+    /* transform-style: preserve-3d; */
+    /* perspective: 1000px; */
     *:not(Lottie){
         padding: 10px;
     }

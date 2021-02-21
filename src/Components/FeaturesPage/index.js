@@ -13,8 +13,9 @@ const Index = () => {
     let [hoverCard,setHoverCard] = useState(-1);
     let [selectedCard,setSelectedCard] = useState(-1);
     let [showMainText,setShowMainText] = useState(false)
-    // let [xOff,setXOff] = useState(0)
-    // let [yOff,setYOff] = useState(0)
+    let [cardDim,setCardDim] = useState()
+    let [reset,setReset] = useState(false)
+    let cardRef = useRef(null)
 
     let temp = []
     
@@ -34,14 +35,17 @@ const Index = () => {
         setColCards(cards)
     },[])
 
-    useEffect(() => {
-        console.log('hoverCard :',hoverCard)
-    },[hoverCard])
+    useEffect(() => {   
+        let {current:frame} = cardRef
+        if(frame){
+            var dim = frame.getBoundingClientRect()
+            console.log('parentDim :',dim);
+            setCardDim(dim);
+        }
+    }, [cardRef])
 
     var changeHoverCard = (id) => {
         setHoverCard(id);
-        // setXOff(0)
-        // setYOff(0)
     }
 
     var onClick = (id) => {
@@ -54,12 +58,14 @@ const Index = () => {
     }
 
 
-    let col = (pairs,isSelected,otherSelected) => {
+    let col = (pairs,isSelected,otherSelected,_idx) => {
         return (<ColumnCards isSelected={isSelected} otherSelected={otherSelected}>
-            {pairs.map(el => {
+            {pairs.map((el,idx) => {
                 var isSelected = selectedCard == el.id
                 var isHover = hoverCard == el.id
                 var card = <FeatureCard
+                    idx={idx + 2 * _idx}
+                    parentDim={cardDim}
                     card={el}
                     isSelected={isSelected}
                     otherSelected={selectedCard != -1}
@@ -83,16 +89,16 @@ const Index = () => {
             var isSelected = (idx * 2 < selectedCard && selectedCard <= (idx + 1) * 2)
             var otherSelected = selectedCard != -1
                 // if (selectedCard == -1 || isSelected){
-                    return col(pairs,isSelected,otherSelected)
+                    return col(pairs,isSelected,otherSelected,idx)
                 // }
             })}
     
     </>
 
     return (
-        <FeaturesPageContainer id="featurePage">
+        <FeaturesPageContainer id="featurePage" ref={cardRef}>
             <PageHeader>Features</PageHeader>
-                <FeaturesContainer>
+                <FeaturesContainer onMouseEnter={() => reset && setReset(reset => !reset)} onMouseLeave={() => !reset && setReset(reset => !reset)}>
                     {colData}
                 </FeaturesContainer>
             {/* <AnimateSharedLayout>
@@ -134,22 +140,33 @@ const ExpandedCardComponent = (props) => {
 
 const FeatureCard = (props) => {
 
-    let {card,isSelected,isHover,changeHoverCard,onClick,otherHover,otherSelected} = props
+    let {card,isSelected,isHover,changeHoverCard,onClick,otherHover,otherSelected,parentDim,idx} = props
     let [showMainText,setShowMainText] = useState(false)
     let [xOff,setXOff] = useState(0)
     let [yOff,setYOff] = useState(0)
     let [cardDimension,setCardDimension] = useState(null)
     let cardRef = useRef();
+    const [spring, setSpring] = useSpring(() => ({ xys: [0, 0, 1], config: { mass: 5, tension: 350, friction: 40 } }))
 
+    var resetAll = () => {
+        setSpring({xys: [0,0,1]})
+    }
 
-    let {pageYOffset:pyoff,innerHeight} = window
+    let {pageYOffset:pyoff,innerHeight,innerWidth} = window
+
+    useEffect(() => {
+        let el = document.getElementById(`feature-${idx}`)
+        el.style.transform =  !isHover && !otherHover && `perspective(${(cardDimension ? cardDimension.height : 0) + 100}px) rotateX(0deg) rotateY(0deg) scale(1)`
+    },[isHover,otherHover])
 
     // useEffect(() => {
-    //     console.log(`otherSelected : `,otherSelected)
-    // },[otherSelected])
+    //     let {xys} = spring
+    //     console.log(xys)
+    // }, [spring.xys])
 
     useEffect(() => {
         if(cardRef.current){
+            console.log('className : ',cardRef.current)
             var cardDim = cardRef.current.getBoundingClientRect()
             setCardDimension(cardDim)
         }
@@ -161,58 +178,49 @@ const FeatureCard = (props) => {
         let limit = 5
         let {clientX : x, clientY :y} = e
         let {width,height,top,left} = cardDimension
-        // changeHoverCard(card.id)
         let window_w = width/2
         let window_h = height/2
-        let _top = top > innerHeight ? top - pyoff : top
+        top -= top > pyoff && pyoff
         x = (x - left)
-        y = (y - _top)
+        y = (y - top)
         changeHoverCard(card.id)
-        // xOff = ((x - window_w)/100) * limit
-        // yOff = (-(y - window_h)/100) * limit
-        // setXOff(Math.abs(xOff) > limit ? xOff > 0 ? limit : -limit : xOff)
-        // setYOff(Math.abs(yOff) > limit ? yOff > 0 ? limit : -limit : yOff)
-        xOff = (x - window_w)/100
-        yOff = -(y - window_h)/100
-        setXOff(xOff)
-        setYOff(yOff)
+        xOff = (x - window_w)/20
+        yOff = -(y - window_h)/20
+        // setXOff(xOff)
+        // setYOff(yOff)
         // set({xys: [yOff,xOff,1]})
+        setSpring({xys: [yOff,xOff,1]})
     }
 
 
     var onLeave = (e) => {
-        changeHoverCard(-1);
-        setYOff(0);
-        setXOff(0);
-        // set({ xys: [0, 0, 1] })
-
+        console.log('OnLeave is being called!')
+        setSpring({xys: [0,0,1]})
+        changeHoverCard(-1)
     }
 
-    // const trans = (x, y, s) => `perspective(100px) rotateX(${isHover && !isSelected ? x : 0}deg) rotateY(${isHover && !isSelected ? x : 0}deg) scale(${isHover && !isSelected ? s : otherHover ? 0.9 : s})`
-    var cardProps = {
-        scale: !isSelected ? isHover ? 1.05 : otherHover && 0.9 : 1,
-        rotateX: !isSelected ? yOff : 0,
-        rotateY: !isSelected ? xOff : 0,
-    }
+    const trans = (x, y, s) => `perspective(${(cardDimension ? cardDimension.height : 0) + 100}px) rotateX(${isHover && !isSelected ? x : 0}deg) rotateY(${isHover && !isSelected ? y : 0}deg) scale(${isHover || isSelected ? s : otherHover  && 0.9})`
+    // var cardProps = {
+    //     scale: !isSelected ? isHover ? 1.05 : otherHover && 0.9 : 1,
+    //     rotateX: !isSelected ? yOff : 0,
+    //     rotateY: !isSelected ? xOff : 0,
+    // }
     var mainCard =  <Cards 
+                id={`feature-${idx}`}
                 ref = {cardRef}
                 large={card.large} 
                 color={card.color} 
                 hover={isHover} 
                 selectedCard={isSelected}
                 otherSelected={otherSelected}
+                // xOff={spring.xys[0]}
+                // yOff={spring.xys[1]}
                 onMouseMove={changeOffsets_spring}
                 onMouseLeave={onLeave}
                 onClick={() => {onClick(card.id)}}
                 isLottie={card.lottieCard != null}
-                whileHover={cardProps}
-                whileTap={{scale : 0.9}}
-                exit={{scale: 1}}
-                transition={{
-                    
-                    rotateX:{ type: "ease", stiffness: 300, damping: 30 },
-                    duration: 0.3
-                }}
+                style={{transform: spring.xys.interpolate(trans)}}
+
             >
                 <CardContent 
                     // style={{ transform: spring_props.xys.interpolate(trans)}}
