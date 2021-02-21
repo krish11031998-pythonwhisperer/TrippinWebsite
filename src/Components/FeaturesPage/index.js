@@ -1,18 +1,20 @@
 import React,{useState,useEffect, useRef} from 'react'
-import { Cards, ColumnCards, FeaturesContainer, FeaturesPageContainer,CardContent } from './style'
-import {Colors as colors} from '../../style'
+import { Cards, ColumnCards, FeaturesContainer, FeaturesPageContainer,CardContent,CardOutline, ExpandedCard } from './style'
+import {Colors as colors,PageHeader} from '../../style'
 import data from './data'
 // import Lottie from 'react-lottie'
 import LottiePlayer from '../Helper/LottiePlayer'
+import {useSpring,animated} from 'react-spring'
+import { AnimatePresence, AnimateSharedLayout, motion } from 'framer-motion'
 
 const Index = () => {
     let cards = []
     let [colCards,setColCards] = useState([])
-    let [hoverCard,setHoverCard] = useState(0);
+    let [hoverCard,setHoverCard] = useState(-1);
     let [selectedCard,setSelectedCard] = useState(-1);
     let [showMainText,setShowMainText] = useState(false)
-    let [xOff,setXOff] = useState(0)
-    let [yOff,setYOff] = useState(0)
+    // let [xOff,setXOff] = useState(0)
+    // let [yOff,setYOff] = useState(0)
 
     let temp = []
     
@@ -29,14 +31,17 @@ const Index = () => {
             cards.push(temp)
             temp = []
         }
-        // console.log(cards)
         setColCards(cards)
     },[])
 
-    var changeHoverCard = (e,id) => {
+    useEffect(() => {
+        console.log('hoverCard :',hoverCard)
+    },[hoverCard])
+
+    var changeHoverCard = (id) => {
         setHoverCard(id);
-        setXOff(0)
-        setYOff(0)
+        // setXOff(0)
+        // setYOff(0)
     }
 
     var onClick = (id) => {
@@ -49,23 +54,24 @@ const Index = () => {
     }
 
 
-    let col = (pairs,isSelected) => {
-        return (<ColumnCards isSelected={isSelected}>
+    let col = (pairs,isSelected,otherSelected) => {
+        return (<ColumnCards isSelected={isSelected} otherSelected={otherSelected}>
             {pairs.map(el => {
                 var isSelected = selectedCard == el.id
                 var isHover = hoverCard == el.id
                 var card = <FeatureCard
                     card={el}
                     isSelected={isSelected}
+                    otherSelected={selectedCard != -1}
                     isHover={isHover}
-                    otherHover={hoverCard != 0}
+                    otherHover={hoverCard != -1}
                     changeHoverCard={changeHoverCard}
                     onClick={onClick}
                     hoverCard={hoverCard}
                 />
-                if (selectedCard == -1 || isSelected){
+                // if (selectedCard == -1 || isSelected){
                     return card
-                }
+                // }
                  
             })}
         </ColumnCards>)
@@ -74,137 +80,164 @@ const Index = () => {
     
     var colData = <>
         {colCards.map((pairs,idx) =>{
-            var isSelected = (idx * 2 < selectedCard && selectedCard <= (idx + 1) * 2) && selectedCard != -1
-                if (selectedCard == -1 || isSelected){
-                    // console.log(`sending col : ${idx} ${selectedCard}`)
-                    return col(pairs,isSelected)
-                }
+            var isSelected = (idx * 2 < selectedCard && selectedCard <= (idx + 1) * 2)
+            var otherSelected = selectedCard != -1
+                // if (selectedCard == -1 || isSelected){
+                    return col(pairs,isSelected,otherSelected)
+                // }
             })}
     
     </>
-    
-    
-    // let presentWindow = 
 
     return (
-        <FeaturesPageContainer>
-            <FeaturesContainer>
-                {colData}
-            </FeaturesContainer>
+        <FeaturesPageContainer id="featurePage">
+            <PageHeader>Features</PageHeader>
+                <FeaturesContainer>
+                    {colData}
+                </FeaturesContainer>
+            {/* <AnimateSharedLayout>
+                <FeaturesContainer>
+                    {colData}
+                </FeaturesContainer>
+                <AnimatePresence>
+                    {selectedCard && <ExpandedCardComponent card={data.filter(el=> el.id == selectedCard)} onClick={onClick} isSelected={selectedCard != -1} />}
+                </AnimatePresence>
+            </AnimateSharedLayout> */}
+            
         </FeaturesPageContainer>
     )
+}
+
+const ExpandedCardComponent = (props) => {
+    let {card,isSelected,onClick} = props;
+
+    useEffect(() => {
+        console.log('CardData is :',card)
+    }, [card])
+    return <>
+        {isSelected && <ExpandedCard
+            onClick={() => {onClick(-1)}}
+        >
+            <CardContent>
+                <motion.h5>{card.heading}</motion.h5>
+                <motion.h2>{card.description}</motion.h2>
+            </CardContent>
+            {card.large && <LottiePlayer lottieCard={card.lottieCard} factor={card.factor}/>}
+
+        </ExpandedCard>}
+    
+    </>
+
+
 }
 
 
 const FeatureCard = (props) => {
 
-    let {card,isSelected,isHover,changeHoverCard,onClick,otherHover,hoverCard} = props
+    let {card,isSelected,isHover,changeHoverCard,onClick,otherHover,otherSelected} = props
     let [showMainText,setShowMainText] = useState(false)
     let [xOff,setXOff] = useState(0)
     let [yOff,setYOff] = useState(0)
-    let [cardDimension,setCardDimension] = useState({})
-    let cardRef = useRef()
-    
-    useEffect(() =>{
-        if(!isSelected){
-            if(!otherHover){
-                setShowMainText(true)
-            }else{
-                setShowMainText(false)
-            }
-        }else{
-            if (!showMainText){
-                setShowMainText(true)
-            }
-        }
-        
-    },[isHover])
+    let [cardDimension,setCardDimension] = useState(null)
+    let cardRef = useRef();
+
+
+    let {pageYOffset:pyoff,innerHeight} = window
 
     // useEffect(() => {
-    //     console.log(`xOff : ${xOff} and yOff : ${yOff}`);
-    // }, [xOff,yOff])
+    //     console.log(`otherSelected : `,otherSelected)
+    // },[otherSelected])
 
     useEffect(() => {
         if(cardRef.current){
-            // console.log(cardRef.current)
-            setCardDimension(cardRef.current.getBoundingClientRect())
+            var cardDim = cardRef.current.getBoundingClientRect()
+            setCardDimension(cardDim)
         }
     },[cardRef.current,isSelected])
 
-    var lottieCard = <>
-        {card.large && card.lottieCard ? 
-            <LottiePlayer lottieCard={card.lottieCard} hover={isSelected} cardDim={cardDimension} factor={card.factor} cardDim={cardDimension}/>
-            :   
-            <></>
-        }
-    </>
-    var rightCard = <>{isSelected ?
-        <CardContent isText={false} selected={isSelected}>
-            {lottieCard} 
-        </CardContent> : 
-        <></>
-    }</>
-    
-    var changeOffsets = (e) => {
-        if(hoverCard != card.id){
-            changeHoverCard(e,card.id)
-        }
+    var lottieCard = card.large && card.lottieCard && <LottiePlayer lottieCard={card.lottieCard} factor={card.factor} cardDim={cardDimension}/>
+
+    var changeOffsets_spring = (e) => {
+        let limit = 5
         let {clientX : x, clientY :y} = e
         let {width,height,top,left} = cardDimension
-        let {pageYOffset:pyoff,innerHeight} = window
-        // console.log(`top : ${top} and innerHeight : ${innerHeight}`);
+        // changeHoverCard(card.id)
         let window_w = width/2
         let window_h = height/2
         let _top = top > innerHeight ? top - pyoff : top
         x = (x - left)
         y = (y - _top)
-        xOff = (x - window_w)/50
-        yOff = -(y - window_h)/50
+        changeHoverCard(card.id)
+        // xOff = ((x - window_w)/100) * limit
+        // yOff = (-(y - window_h)/100) * limit
+        // setXOff(Math.abs(xOff) > limit ? xOff > 0 ? limit : -limit : xOff)
+        // setYOff(Math.abs(yOff) > limit ? yOff > 0 ? limit : -limit : yOff)
+        xOff = (x - window_w)/100
+        yOff = -(y - window_h)/100
         setXOff(xOff)
         setYOff(yOff)
+        // set({xys: [yOff,xOff,1]})
     }
-    return <Cards 
+
+
+    var onLeave = (e) => {
+        changeHoverCard(-1);
+        setYOff(0);
+        setXOff(0);
+        // set({ xys: [0, 0, 1] })
+
+    }
+
+    // const trans = (x, y, s) => `perspective(100px) rotateX(${isHover && !isSelected ? x : 0}deg) rotateY(${isHover && !isSelected ? x : 0}deg) scale(${isHover && !isSelected ? s : otherHover ? 0.9 : s})`
+    var cardProps = {
+        scale: !isSelected ? isHover ? 1.05 : otherHover && 0.9 : 1,
+        rotateX: !isSelected ? yOff : 0,
+        rotateY: !isSelected ? xOff : 0,
+    }
+    var mainCard =  <Cards 
                 ref = {cardRef}
                 large={card.large} 
                 color={card.color} 
                 hover={isHover} 
                 selectedCard={isSelected}
-                otherCard={otherHover}
-                xOff={xOff}
-                yOff={yOff}
-                onMouseMove={(e) => {changeOffsets(e)}}
-                onMouseLeave={(e) => {
-                    changeHoverCard(e,0);
-                    setYOff(0);
-                    setXOff(0)
-                }}
+                otherSelected={otherSelected}
+                onMouseMove={changeOffsets_spring}
+                onMouseLeave={onLeave}
                 onClick={() => {onClick(card.id)}}
                 isLottie={card.lottieCard != null}
+                whileHover={cardProps}
+                whileTap={{scale : 0.9}}
+                exit={{scale: 1}}
+                transition={{
+                    
+                    rotateX:{ type: "ease", stiffness: 300, damping: 30 },
+                    duration: 0.3
+                }}
             >
                 <CardContent 
+                    // style={{ transform: spring_props.xys.interpolate(trans)}}
                     isText={true} 
                     selected={isSelected}
-                    // onMouseMove={(e) => {changeOffsets(e)}}
-                    // onMouseLeave={(e) => {
-                    //     changeHoverCard(e,0);
-                    //     setYOff(0);
-                    //     setXOff(0)
-                    // }}
-                    // onClick={() => {onClick(card.id)}}
                 >
                     <h1>{card.heading}</h1>
                     <text>{card.description}</text>
-                    {!isSelected ? lottieCard : <></>}
-                    {showMainText && isSelected ? card.mainText ? <ul>{card.mainText.map(point => <li><text>{point}</text></li>)}</ul> : <text></text> : <></>}
+                    {!isSelected  && lottieCard}
+                    {showMainText && isSelected && card.mainText && <ul>{card.mainText.map(point => <li><text>{point}</text></li>)}</ul>}
                 </CardContent>
-                {isSelected ? 
-                    <CardContent isText={false} selected={isSelected}>
-                    {lottieCard} 
-                    </CardContent> : 
-                    <></>
-                }
+                {isSelected && <CardContent isText={false} selected={isSelected}>{lottieCard}</CardContent>}
     
             </Cards>
+
+    // return <CardOutline
+    //         large={card.large} 
+    //         color={card.color}
+    //         onMouseMove={changeOffsets_spring}
+    //             // onMouseEnter={(e) => {changeHoverCard(true)}}
+    //             onMouseLeave={onLeave}
+    //         >
+    //     {mainCard}
+    // </CardOutline>
+    return mainCard
 }
 
 

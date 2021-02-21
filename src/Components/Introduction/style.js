@@ -85,7 +85,7 @@ export const IntroRow = styled.div`
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-content: center;
-    background-color:${({isHover,changeColor,baseColor}) => isHover ? changeColor : baseColor};
+    background-color:${({isHover,changeColor,baseColor,isSelected}) => isHover || isSelected ? changeColor : baseColor};
     border-radius: 15px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.5);
     transform: scale(${({isHover,otherCard}) => isHover ? 1: otherCard ? 0.95 : 1}) rotateX(${({yOff,isHover,isSelected}) => isHover && !isSelected ? yOff : 0}deg) rotateY(${({xOff,isHover,isSelected}) => isHover && !isSelected ? xOff : 0}deg);
@@ -100,26 +100,27 @@ export const IntroRow = styled.div`
 
     h1{
         font-size: 30px;
-        color:${({changeColor,isHover}) => isHover ? colors.white : changeColor};
+        color:${({changeColor,isHover,isSelected}) => isHover || isSelected ? colors.white : changeColor};
         font-weight: bold;
     }
 
     text{
         font-size: 25px;
-        color:${({isHover,textColor}) => isHover ? colors.white : textColor};
+        color:${({isHover,textColor,isSelected}) => isHover || isSelected ? colors.white : textColor};
     }
 `
 
 export const FallDownCard = styled.div`
     flex: 0 1 50%;
-    position:absolute;
-    top: ${({showCard}) => showCard ? 10 : 0}%;
-    left: calc(50% - width/2);
-    margin: 2.5%;
+    margin: 5% 2.5%;
     width: calc(100% - 5%);
     /* height:auto; */
     /* max-height: calc(100% - 5%); */
-    height: calc(55% - 5%);
+    height: calc(50% - 10%);
+    position:absolute;
+    top: ${({showCard}) => showCard ? 10 : 20}%;
+    left: calc(50% - width/2);
+    
     border-radius: 15px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.5);
     display: flex;
@@ -127,13 +128,12 @@ export const FallDownCard = styled.div`
     justify-content: flex-start;
     align-content: center;
     opacity:${({showCard}) => showCard ? 1 : 0};
+    transition: all 0.5s ease;
     /* background-color:${colors.white}; */
     
     *{
         padding: 10px 25px;
     }
-    
-    transition: all 0.3s ease-in-out;
     
     h1{
         font-size: 30px;
@@ -156,6 +156,7 @@ export const FallDownCard = styled.div`
         border-radius: 15px;
         justify-self: flex-end;
         cursor:pointer;
+        transition: all 0.3s ease;
     }
 
 

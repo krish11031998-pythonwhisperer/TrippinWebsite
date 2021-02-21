@@ -24,7 +24,7 @@ export const Nav = styled.nav`
     flex-grow: 0;
     justify-content: space-between;
     align-items:center;
-    z-index:0;
+    z-index:999;
     background-color: ${colors.secondary};
 
 `

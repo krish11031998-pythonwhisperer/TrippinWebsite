@@ -3,6 +3,7 @@ import { HomeContainer, HomeHeaderArea, HomeHeading, HomePageTab, VideoContainer
 import FeaturePage from '../FeaturesPage'
 import Introduction from '../Introduction'
 import ImageCarousel from '../PhotosZStack'
+import AboutUs from '../AboutPage'
 const Index = () => {
     let url = 'videos/video-1.mp4'
     let img = 'images/img-1.jpg'
@@ -30,8 +31,10 @@ const Index = () => {
                 </HomeContainer>
                 
             </HomePageTab>
+            <AboutUs/>
             <Introduction/>
             <FeaturePage/>
+            {/* <AboutUs/> */}
         </>
         
     )

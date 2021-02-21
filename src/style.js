@@ -19,6 +19,21 @@ export const GlobalStyle = createGlobalStyle`
     }
 `
 
+export const PageHeader = styled.div`
+    margin:0 2.5%;
+    margin-top: 25px;
+    width:fit-content;
+    height:auto;
+    /* max-height: 10%; */
+    font-size: 40px;
+    font-family: 'Bungee Shade',cursive;
+    align-self: flex-start;
+    padding: 25px;
+    background-color:black;
+    border-radius: 30px;
+    color:white;
+`
+
 export const Container = styled.div`
     width:100%;
     height:100vh;
@@ -34,7 +49,8 @@ export const Colors = {
     white:'#FEFAEC',
     cyan:'#A9EEE6',
     tomato:'#F38181',
-    indigo:'#625772'
+    indigo:'#625772',
+    clear:'#00FFFFFF'
 }
 
 export const Button = styled(Link)`

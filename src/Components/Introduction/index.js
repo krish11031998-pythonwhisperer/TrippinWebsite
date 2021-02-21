@@ -130,7 +130,7 @@ const StatementRowCard = (props) => {
 
     useEffect(() =>{
         if(cardRef.current){
-            console.log(cardRef.current)
+            // console.log(cardRef.current)
             setCardDimension(cardRef.current.getBoundingClientRect())
         }
     },[cardRef.current])
