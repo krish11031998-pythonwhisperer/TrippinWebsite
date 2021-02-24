@@ -1,7 +1,8 @@
 import styled from 'styled-components'
 import {Colors as colors,Container} from '../../style'
+import {motion} from 'framer-motion'
 
-export const AboutUsContainer = styled.div`
+export const AboutUsContainer = styled(motion.div)`
     background: ${({colorone,colortwo,dir}) => {
         if (colorone && colortwo && dir){
             var rgb_one = colorone.hexTorgb()
@@ -25,7 +26,8 @@ export const AboutUsContainer = styled.div`
     }};
     /* ${Container} */
     width:100%;
-    height:100vh;
+    min-height:100vh;
+    height: auto;
     padding: 1px 0;
 /* 
     *{
@@ -79,7 +81,7 @@ export const BGBox = styled.div`
     width:${({view,time,idx,timeSpan}) => view == idx ? time * 100/timeSpan : 100}%;
     /* height:${({h}) => h}px; */
     height: 10px;
-    background:${({view,idx}) => view == idx ? colors.primary : 'transparent'};
+    background-color:${({view,idx}) => view == idx ? colors.white : 'transparent'};
     z-index: 1;
     border-radius:30px;
     object-fit:fill;
@@ -143,10 +145,10 @@ export const AboutUsCurveBox = styled.div`
     ${AboutBox}
 `
 
-export const AboutContentBox = styled.div`
+export const AboutContentBox = styled(motion.div)`
     flex: 0 1 100%;
     width:100%;
-    height:100%;
+    min-height:100%;
     /* height:auto; */
     padding:20px;
     border-radius: 30px;
@@ -155,13 +157,6 @@ export const AboutContentBox = styled.div`
     justify-content:flex-start;
     align-items:flex-start;
     box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-/* 
-    text{
-        padding: 10px 0;
-        font-weight: normal;
-        font-size: 17.5px;
-        color:black
-    } */
 
 `
 
@@ -177,7 +172,7 @@ export const AboutDescriptBox = styled.div`
     justify-content:flex-start;
     align-items:flex-start;
     /* box-shadow: 0 10px 20px rgba(0,0,0,0.5); */
-
+    z-index: 0;
     text{
         padding: 10px 0;
         font-weight: normal;
@@ -185,5 +180,132 @@ export const AboutDescriptBox = styled.div`
         color:black
     }
 
+    ul{
+        flex: 0 1 auto;
+        width:100%;
+        height:100%;
+        list-style:none;
+        display:flex;
+        flex-flow: row wrap;
+        justify-content:space-between;
+        align-items: flex-start;
+        cursor:pointer;
+        transition: all 0.3s ease;
+
+        li{
+            flex: 0 1 30%;
+            justify-content:center;
+            align-items:center;
+            width:100%;
+            height:100%;
+            /* padding:10px 20px; */
+            margin: 10px;
+        }
+    }
+`
+
+
+export const ExpandInfoCard = styled(motion.div)`
+    flex: 0 1 40%;
+    width: 100%;
+    height:100%;
+    display:flex;
+    flex-flow: column nowrap;
+    align-items:flex-start;
+    justify-content:flex-start;
+    /* background-color:${colors.secondary}; */
+    border-radius: 30px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    padding: 20px;
+    backdrop-filter: blur;
+    /* background-color: ${colors.secondary}; */
+    color: ${colors.secondary};
+    /* color:${colors.white}; */
+    *{
+        padding: 10px;
+    }
+    text{
+        /* flex: 1 0 100%; */
+        flex-grow: 1;
+    }
+    
+`
+
+// export const InfoCardZStack = styled.div`
+//                 position:relative;
+//                 width:100%;
+//                 height:100%;
+//                 z-index: 0;
+//                 transition: all 0.3s ease;
+//                 &:hover{
+//                     transform: scale(1.1);
+//                 }
+
+//                 .top{
+//                     position:absolute;
+//                     z-index: 2;
+//                     font-size: 15px;
+//                     width:100%;
+//                     height: 100%;
+//                     /* left: width * 0.0625%; */
+//                     left: 10%;
+//                     top:50%;
+//                     padding: 10px;
+//                     border-radius: 15px;
+//                     box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+//                     overflow:hidden;
+//                     background-color:${colors.secondary};
+//                     color:${colors.white};
+//                 }
+
+//                 .bottom{
+//                     /* position:absolute;
+//                     z-index: 2;
+//                     left:0;
+//                     top:0; */
+//                     z-index: 1;
+//                     height: 50%;
+//                     font-size: 400%;
+//                     margin: 10px;
+//                     color:${colors.tomato};
+//                     font-weight:bold;
+//                 }
+// `
+
+export const InfoCardVStack = styled.div`
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-flow:column nowrap;
+    justify-content:flex-start;
+    align-items:flex-start;
+    transition: all 0.3s ease;
+
+    .Detail{
+        flex: 0 1 auto;
+        height:100%;
+        font-size: 15px;
+        padding: 10px;
+        
+        overflow:hidden;
+        /* background-color:${colors.secondary}; */
+        color:${colors.secondary};
+        
+    }
+
+    .Num{
+        /* z-index: 1; */
+        height: 50%;
+        font-size: 400%;
+        margin: 10px;
+        color:${colors.tomato};
+        font-weight:bold;
+    }
+
+    &:hover{
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        transform: scale(1.1);
+    }
 
 `

@@ -30,7 +30,7 @@ export const PageHeader = styled.div`
     align-self: flex-start;
     padding: 25px;
     background-color:black;
-    border-radius: 30px;
+    border-radius: 40px;
     color:white;
 `
 

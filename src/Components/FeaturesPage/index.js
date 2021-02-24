@@ -159,11 +159,6 @@ const FeatureCard = (props) => {
         el.style.transform =  !isHover && !otherHover && `perspective(${(cardDimension ? cardDimension.height : 0) + 100}px) rotateX(0deg) rotateY(0deg) scale(1)`
     },[isHover,otherHover])
 
-    // useEffect(() => {
-    //     let {xys} = spring
-    //     console.log(xys)
-    // }, [spring.xys])
-
     useEffect(() => {
         if(cardRef.current){
             console.log('className : ',cardRef.current)
@@ -186,6 +181,8 @@ const FeatureCard = (props) => {
         changeHoverCard(card.id)
         xOff = (x - window_w)/20
         yOff = -(y - window_h)/20
+        xOff = Math.abs(xOff) <= 10 ? xOff : xOff < 0 ? -10 : 10
+        yOff = Math.abs(yOff) < 10 ? yOff : yOff < 0 ? -10 : 10
         // setXOff(xOff)
         // setYOff(yOff)
         // set({xys: [yOff,xOff,1]})
