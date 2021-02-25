@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import {motion} from 'framer-motion'
+import {animated} from 'react-spring'
 export const ImageStackContainer = styled.div`
     flex: 0 1 20%;
     width: 100%;
@@ -26,16 +27,16 @@ export const ImageContainer = styled.img`
     transition: all 0.3s ease;
 `
 
-export const Image = styled(motion.img)`
+export const Image = styled(animated.img)`
     object-fit: cover;
     border-radius: 30px;
     position:absolute;
     /* top:${({idx,isDragged,y_off}) => isDragged ? y_off : idx > 3 ? 40 : 20 * idx}px; */
-    top:${({idx}) => idx > 3 ? 40 : 20 * idx}px;
-    left:${({idx,removeCard}) => 50 + (removeCard ? -50 : idx > 3 ? 40 : 20 * idx)}px;
-    height: ${({h_off}) => h_off}px;
+    /* top:${({idx}) => idx > 3 ? 40 : 20 * idx}px;
+    left:${({idx,removeCard}) => 50 + (removeCard ? -50 : idx > 3 ? 40 : 20 * idx)}px; */
+    /* height: ${({h_off}) => h_off}px; */
     width:calc(75%);
-    opacity:${({removeCard,current}) => removeCard && current ? 0 : 1};
-    z-index:${({idx}) => idx == 0 ? -1 : (idx * -1) - 1};
-    transition: all 0.3s ease;
+    /* opacity:${({removeCard,current}) => removeCard && current ? 0 : 1};
+    z-index:${({idx}) => idx == 0 ? -1 : (idx * -1) - 1}; */
+    /* transition: all 0.3s ease; */
 `

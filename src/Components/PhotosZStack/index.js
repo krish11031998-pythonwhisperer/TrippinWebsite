@@ -1,44 +1,70 @@
 import React, {useState,useEffect,useRef,useMemo} from 'react'
 import {ImageStackContainer,ImageContainer,Image} from './style'
 import {motion} from 'framer-motion'
+import {animated,useTransition} from 'react-spring'
+
+
+Number.prototype.dynamicDimension = function(h){
+    let idx = this
+    console.log('height: ',h)
+    var height = h - (idx > 3 ? 60 : 30 * idx)
+    var left = idx > 3 ? 40 : 20 * idx
+    var top = idx > 3 ? 40 : 20 * idx
+    var zIndex = idx == 0 ? -1 : (idx * -1) - 1
+    return {height,top,left,zIndex}
+  }
+  
+
 const Index = () => {
     let imgs = [...Array(10).keys()].filter(el => el != 0).map(el => `images/img-${el}.jpg`);
-    let [pageX,setPageX] = useState(0);
-    let [pageY,setPageY] = useState(0);
     let [changeCard,setChangeCard] = useState(false);
     let [idx,setIdx] = useState(-1);
     let containerRef = useRef()
-    let image = useMemo(() => {
+    let [max_height,setMaxHeight] = useState(0)
+    let images = useMemo(() => {
+        setChangeCard(false)
         return updateImages()
     },[idx])
-    // let[image,setImage] = useState([])
+
+    var updateStyle = (height,left,top,zIndex,key) => {
+        var left_off = 20
+        var top_off = 20
+        var height_off = 30
+        var zIndex_off = 1
+        return ({height:height+height_off,left:left+left_off,top:top+top_off,zIndex:zIndex+zIndex_off})
+
+    }
+
+    let transition = useTransition(images,image => image.key,{
+        from: ({height,left,top,zIndex,key}) => ({opacity:0,height,left,top,zIndex}),
+        enter: ({height,left,top,zIndex,key}) => ({opacity:1,height,left,top,zIndex}),
+        update:({height,left,top,zIndex,key}) => (updateStyle(height,left,top,zIndex,key)),
+        leave:({height,left,top,zIndex,key}) => ({opacity:0,left: key == idx ? -50 : 0})
+    })
     
     useEffect(() => {
-        // setImage([...imgs.slice(0,3)])
+        // setImage(imgs)
         setIdx(0)
-        console.log('imgs.length : ',imgs.length)
         setInterval(() => {
             console.log('10 seconds elapsed')
             setChangeCard(true)
         }, 10000);
     }, [])
 
+    useEffect(() => {
+        let {current:frame} = containerRef
+        if(frame && max_height == 0){
+            setMaxHeight(frame.offsetHeight - 100)
+        }
+    },[containerRef])
 
     useEffect(() => {
-        if (changeCard){
-            setTimeout(() => {
-                setIdx(idx => idx < imgs.length - 1 ? idx + 1 : 0)
-            },150)
-            setTimeout(() => {
-                setChangeCard(state => !state)
-            },300)
-            // setIdx(idx => idx < imgs.length - 1 ? idx + 1 : 0)
+        if(changeCard){
+            setIdx(idx => idx < imgs.length - 1 ? idx + 1 : 0)
         }
     },[changeCard])
 
-
-
-
+    var imgUpdate
 
     function updateImages(){
         var _imgs = []
@@ -54,67 +80,48 @@ const Index = () => {
             _imgs = [...imgs.slice(idx),...imgs.slice(0,(3-diff))]
         }
         console.log('imgs.length :',imgs.length);
-        return _imgs
+        return _imgs.map((el,_idx) => {
+            var cardDim = _idx.dynamicDimension(containerRef && max_height || 400)
+            var result = {img:el,key:idx + _idx,...cardDim}
+            console.log('result : ',result);
+            return result
+        });
     }
 
     return (
         <ImageStackContainer ref ={containerRef}>
-            {/* {imgs.reverse().map((el,id) => {
-                let current = id == idx
-                if(id >= idx &&  id < idx + 3){
-                    let _idx = id - idx
-                    // console.log(`id : ${id} idx: ${idx} _idx: ${_idx}`);
-                    return <ImageCard 
-                        card = {el} 
-                        idx = {_idx} 
-                        forRef={containerRef} 
-                        removeCard={changeCard}
-                        current={current}
-                    />
-                }
-            })} */}
-            {image.map((el,id) => {
-                let current = id == 0
-                    return <ImageCard 
-                        card = {el} 
-                        idx = {id} 
-                        forRef={containerRef} 
-                        removeCard={changeCard}
-                        current={current}
-                    />
-            })}
+            <div>
+                {transition.reverse().map(({item,key,props:style}) => {
+                    // {images.map((el,id) => {
+                        let current = key == 0
+                        return <ImageCard card={item.img} style={style} key={key} />
+                })}
+            </div>
+            
         </ImageStackContainer>
     )
 }
 
 const ImageCard = (props) => {
-    let {card,idx,forRef,current,removeCard} = props;
-    let [cardHeight,setCardHeight] = useState(0)
+    let {card,style,key} = props;
+    // let [cardHeight,setCardHeight] = useState(0)
+    let {left,top,zIndex,...rest} = style;
     let cardRef = useRef()
-
-    useEffect(() => {
-        if(forRef.current){
-            let {offsetHeight} = forRef.current
-            let h = gethOff(offsetHeight - 100)
-            // console.log('imageCard offset ',h)
-            setCardHeight(h)
-        }
-    },[forRef.current,idx])
-
-    const gethOff = (h) =>{
-        // console.log(`idx : `,idx);
-        return h - (idx > 3 ? 60 : 30 * idx)
-    } 
+    console.log('style : ',style)
 
     return <Image
+                key={key}
+                style={{
+                    left:left.interpolate(left => `${left}px`),
+                    top:top.interpolate(top => `${top}px`),
+                    zIndex:zIndex.interpolate(zIndex => `${zIndex}px`),
+                    // transform:left.interpolate(left => `translate3d(${left},0,0)`),
+                    ...rest
+                }}
                 ref = {cardRef}
                 src={card}
-                idx={idx} 
-                h_off={cardHeight}  
-                // isDragged={idx == 0}
-                removeCard={removeCard}
-                current={current}
             />
 }
+
 
 export default Index

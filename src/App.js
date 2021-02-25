@@ -23,16 +23,6 @@ String.prototype.hexTorgb = function(){
   ] : null;
 }
 
-Number.prototype.dynamicDimension = function(h){
-  let idx = this
-  console.log('height: ',h)
-  var height = h - (idx > 3 ? 60 : 30 * idx)
-  var left = idx > 3 ? 40 : 20 * idx
-  var top = idx > 3 ? 40 : 20 * idx
-  var zIndex = idx == 0 ? -1 : (idx * -1) - 1
-  return {height,top,left,zIndex}
-}
-
 
 function App() {
   return (
