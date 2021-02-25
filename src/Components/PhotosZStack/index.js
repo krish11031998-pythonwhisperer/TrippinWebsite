@@ -27,11 +27,11 @@ const Index = () => {
     },[idx])
 
     var updateStyle = (height,left,top,zIndex,key) => {
-        var left_off = 20
-        var top_off = 20
-        var height_off = 30
-        var zIndex_off = 1
-        return ({height:height+height_off,left:left+left_off,top:top+top_off,zIndex:zIndex+zIndex_off})
+        left += 20
+        top += 20
+        height += 30
+        zIndex += 1
+        return ({height,left,top,zIndex,key})
 
     }
 
