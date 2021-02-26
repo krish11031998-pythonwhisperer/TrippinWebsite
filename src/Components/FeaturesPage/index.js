@@ -161,13 +161,19 @@ const FeatureCard = (props) => {
 
     useEffect(() => {
         if(cardRef.current){
-            console.log('className : ',cardRef.current)
+            // console.log('className : ',cardRef.current)
             var cardDim = cardRef.current.getBoundingClientRect()
             setCardDimension(cardDim)
         }
     },[cardRef.current,isSelected])
 
-    var lottieCard = card.large && card.lottieCard && <LottiePlayer lottieCard={card.lottieCard} factor={card.factor} cardDim={cardDimension}/>
+    var lottieCard = card.large && card.lottieCard && <LottiePlayer margin={true} lottieCard={card.lottieCard} factor={card.factor} cardDim={cardDimension}/>
+
+    var normalize = (val,min=-10,max=10) => {
+        var res =  (val - min)/(max - min)
+        console.log('res from normalize : ',res);
+        return Math.abs(res) >= 1 || Math.abs(res) <= 0 ? res : res < 0 ? -1 : 1 
+    }
 
     var changeOffsets_spring = (e) => {
         let limit = 5
@@ -181,11 +187,10 @@ const FeatureCard = (props) => {
         changeHoverCard(card.id)
         xOff = (x - window_w)/20
         yOff = -(y - window_h)/20
-        xOff = Math.abs(xOff) <= 10 ? xOff : xOff < 0 ? -10 : 10
-        yOff = Math.abs(yOff) < 10 ? yOff : yOff < 0 ? -10 : 10
-        // setXOff(xOff)
-        // setYOff(yOff)
-        // set({xys: [yOff,xOff,1]})
+        // xOff = Math.abs(xOff) <= 10 ? xOff : 10 * xOff < 0 ? -1 : 1
+        // yOff = Math.abs(yOff) <= 10 ? yOff : 10 * yOff < 0 ? -1 : 1
+        xOff = Math.abs(xOff) > 10 ? normalize(xOff) * 10 : xOff
+        yOff = Math.abs(yOff) > 10 ? normalize(yOff) * 10 : yOff
         setSpring({xys: [yOff,xOff,1]})
     }
 
@@ -197,11 +202,7 @@ const FeatureCard = (props) => {
     }
 
     const trans = (x, y, s) => `perspective(${(cardDimension ? cardDimension.height : 0) + 100}px) rotateX(${isHover && !isSelected ? x : 0}deg) rotateY(${isHover && !isSelected ? y : 0}deg) scale(${isHover || isSelected ? s : otherHover  && 0.9})`
-    // var cardProps = {
-    //     scale: !isSelected ? isHover ? 1.05 : otherHover && 0.9 : 1,
-    //     rotateX: !isSelected ? yOff : 0,
-    //     rotateY: !isSelected ? xOff : 0,
-    // }
+
     var mainCard =  <Cards 
                 id={`feature-${idx}`}
                 ref = {cardRef}

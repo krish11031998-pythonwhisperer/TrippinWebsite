@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import {Container,Colors as colors} from '../../style'
+import {animated} from 'react-spring'
 export const IntroTab = styled.div`
     padding:0px 0;
     width:100%; 
@@ -9,7 +10,7 @@ export const IntroTab = styled.div`
     display: flex;
     flex-flow: column  nowrap;
     justify-content: flex-start;
-    align-content: center;
+    align-content: flex-start;
     background-color: ${colors.white};
     z-index: 0;
     /* *{
@@ -21,14 +22,14 @@ export const SummaryStatement = styled.div`
         flex: 1 1 50%;
         display:flex;
         flex-flow: ${({reverse}) => reverse ? 'row-reverse' : 'row'} nowrap;
-        justify-content:space-around;
-        align-items:center;
+        justify-content:space-between;
+        align-items:flex-start;
         font-size:25px;
         color:${({textColor}) => textColor ? textColor : 'white'};
         /* color:'white'; */
         opacity:${({hideCard}) => hideCard ? 0 : 1};
-        padding:20px;
-        margin:2.5%;
+        padding:20px 10px;
+        margin:1.5%;
         text{
             flex: 0 1 60%;
         }
@@ -62,7 +63,7 @@ export const IntroSectionTab = styled.div`
 
 export const IntroContainer = styled.div`
     flex: 0 1 auto;
-    margin:2.5%;   
+    margin:1.5%;   
     width:calc(100% - 5%);
     height:calc(40% - 5%);
     display:flex;
@@ -110,7 +111,7 @@ export const IntroRow = styled.div`
     }
 `
 
-export const FallDownCard = styled.div`
+export const FallDownCard = styled(animated.div)`
     flex: 0 1 50%;
     margin: 5% 2.5%;
     width: calc(100% - 5%);
@@ -118,7 +119,7 @@ export const FallDownCard = styled.div`
     /* max-height: calc(100% - 5%); */
     height: calc(50% - 10%);
     position:absolute;
-    top: ${({showCard}) => showCard ? 10 : 20}%;
+    /* top: ${({showCard}) => showCard ? 10 : 20}%; */
     left: calc(50% - width/2);
     
     border-radius: 15px;
@@ -127,8 +128,8 @@ export const FallDownCard = styled.div`
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-content: center;
-    opacity:${({showCard}) => showCard ? 1 : 0};
-    transition: all 0.5s ease;
+    /* opacity:${({showCard}) => showCard ? 1 : 0}; */
+    /* transition: all 0.5s ease; */
     /* background-color:${colors.white}; */
     
     *{

@@ -6,7 +6,7 @@ import {animated,useTransition} from 'react-spring'
 
 Number.prototype.dynamicDimension = function(h){
     let idx = this
-    console.log('height: ',h)
+    // console.log('height: ',h)
     var height = h - (idx > 3 ? 60 : 30 * idx)
     var left = idx > 3 ? 40 : 20 * idx
     var top = idx > 3 ? 40 : 20 * idx
@@ -46,7 +46,7 @@ const Index = () => {
         // setImage(imgs)
         setIdx(0)
         setInterval(() => {
-            console.log('10 seconds elapsed')
+            // console.log('10 seconds elapsed')
             setChangeCard(true)
         }, 10000);
     }, [])
@@ -68,7 +68,7 @@ const Index = () => {
 
     function updateImages(){
         var _imgs = []
-        console.log('idx (in updateImages function) : ',idx)
+        // console.log('idx (in updateImages function) : ',idx)
         if (imgs == null){
             return _imgs
         }
@@ -79,11 +79,11 @@ const Index = () => {
             let diff = max - idx
             _imgs = [...imgs.slice(idx),...imgs.slice(0,(3-diff))]
         }
-        console.log('imgs.length :',imgs.length);
+        // console.log('imgs.length :',imgs.length);
         return _imgs.map((el,_idx) => {
             var cardDim = _idx.dynamicDimension(containerRef && max_height || 400)
             var result = {img:el,key:idx + _idx,...cardDim}
-            console.log('result : ',result);
+            // console.log('result : ',result);
             return result
         });
     }
@@ -107,7 +107,7 @@ const ImageCard = (props) => {
     // let [cardHeight,setCardHeight] = useState(0)
     let {left,top,zIndex,...rest} = style;
     let cardRef = useRef()
-    console.log('style : ',style)
+    // console.log('style : ',style)
 
     return <Image
                 key={key}

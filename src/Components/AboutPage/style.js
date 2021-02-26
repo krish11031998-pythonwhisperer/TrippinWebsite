@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import {Colors as colors,Container} from '../../style'
 import {motion} from 'framer-motion'
+import { animated } from 'react-spring'
 
 export const AboutUsContainer = styled(motion.div)`
     background: ${({colorone,colortwo,dir}) => {
@@ -27,7 +28,8 @@ export const AboutUsContainer = styled(motion.div)`
     /* ${Container} */
     width:100%;
     min-height:100vh;
-    height: auto;
+    /* height: auto; */
+    height: 100vh;
     padding: 1px 0;
 /* 
     *{
@@ -42,7 +44,7 @@ export const AboutUsContainer = styled(motion.div)`
     /* z-index:1; */
 `
 
-export const AboutUsRow = styled.div`
+export const AboutUsRow = styled(animated.div)`
     flex: 0 1 ${({content}) => content ? 70 : 20}%;
     margin: 1% 2.5%;
     padding: 10px;
@@ -72,13 +74,13 @@ export const AboutBox = styled.div`
     /* z-index: 0; */
 `
 
-export const BGBox = styled.div`
+export const BGBox = styled(animated.div)`
     /* position:absolute;
     top:0;
     left:0; */
     margin: 15px 0 5px;
     max-width: calc(100% - 10px);
-    width:${({view,time,idx,timeSpan}) => view == idx ? time * 100/timeSpan : 100}%;
+    /* width:${({view,time,idx,timeSpan}) => view == idx ? time * 100/timeSpan : 100}%; */
     /* height:${({h}) => h}px; */
     height: 10px;
     background-color:${({view,idx}) => view == idx ? colors.white : 'transparent'};
@@ -91,7 +93,7 @@ export const BGBox = styled.div`
     /* height:100%; */
 
 `
-export const AboutUsCurveBox = styled.div`
+export const AboutUsCurveBox = styled(animated.div)`
     /* position:absolute; */
     /* top:15px;
     left:0; */
@@ -105,7 +107,7 @@ export const AboutUsCurveBox = styled.div`
 
     border-radius: 30px;
     box-shadow: 0 0 2.5px rgba(255,255,255,${({isHover}) => isHover ? 0.1 : 0});
-    transform: scale(${({isHover,otherCard,view}) => isHover ? 1 : otherCard ? 0.95 : 1});
+    /* transform: scale(${({isHover,otherCard,view}) => isHover ? 1 : otherCard ? 0.95 : 1}); */
     padding: 20px 20px;
     /* background:${({view,time}) => view ? `linear-gradient(to right, ${colors.secondary} ${time * 10}%,transparent ${time*10}%,transparent 100%)` : 'transparent'}; */
     /* background-color:${({view}) => view ? `rgba(${colors.secondary.hexTorgb().reduce((res,curr) => `${res},${curr}`)},1)` : 'transparent'}; */
@@ -145,8 +147,8 @@ export const AboutUsCurveBox = styled.div`
     ${AboutBox}
 `
 
-export const AboutContentBox = styled(motion.div)`
-    flex: 0 1 100%;
+export const AboutContentBox = styled(animated.div)`
+    flex: 0 1 auto;
     width:100%;
     min-height:100%;
     /* height:auto; */
@@ -163,7 +165,9 @@ export const AboutContentBox = styled(motion.div)`
 export const AboutDescriptBox = styled.div`
     flex: 0 1 60%;
     width:100%;
+    min-height:100%;
     height:100%;
+    max-height:100%;
     /* height:auto; */
     padding:20px;
     /* border-radius: 30px; */
@@ -171,6 +175,7 @@ export const AboutDescriptBox = styled.div`
     flex-flow: column nowrap;
     justify-content:flex-start;
     align-items:flex-start;
+    overflow:hidden;
     /* box-shadow: 0 10px 20px rgba(0,0,0,0.5); */
     z-index: 0;
     text{
@@ -187,7 +192,7 @@ export const AboutDescriptBox = styled.div`
         list-style:none;
         display:flex;
         flex-flow: row wrap;
-        justify-content:space-between;
+        justify-content:space-around;
         align-items: flex-start;
         cursor:pointer;
         transition: all 0.3s ease;
@@ -198,14 +203,15 @@ export const AboutDescriptBox = styled.div`
             align-items:center;
             width:100%;
             height:100%;
+            /* padding:5px 0; */
             /* padding:10px 20px; */
-            margin: 10px;
+            /* margin: 10px; */
         }
     }
 `
 
 
-export const ExpandInfoCard = styled(motion.div)`
+export const ExpandInfoCard = styled(animated.div)`
     flex: 0 1 40%;
     width: 100%;
     height:100%;
@@ -231,46 +237,6 @@ export const ExpandInfoCard = styled(motion.div)`
     
 `
 
-// export const InfoCardZStack = styled.div`
-//                 position:relative;
-//                 width:100%;
-//                 height:100%;
-//                 z-index: 0;
-//                 transition: all 0.3s ease;
-//                 &:hover{
-//                     transform: scale(1.1);
-//                 }
-
-//                 .top{
-//                     position:absolute;
-//                     z-index: 2;
-//                     font-size: 15px;
-//                     width:100%;
-//                     height: 100%;
-//                     /* left: width * 0.0625%; */
-//                     left: 10%;
-//                     top:50%;
-//                     padding: 10px;
-//                     border-radius: 15px;
-//                     box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-//                     overflow:hidden;
-//                     background-color:${colors.secondary};
-//                     color:${colors.white};
-//                 }
-
-//                 .bottom{
-//                     /* position:absolute;
-//                     z-index: 2;
-//                     left:0;
-//                     top:0; */
-//                     z-index: 1;
-//                     height: 50%;
-//                     font-size: 400%;
-//                     margin: 10px;
-//                     color:${colors.tomato};
-//                     font-weight:bold;
-//                 }
-// `
 
 export const InfoCardVStack = styled.div`
     width:100%;

@@ -2,6 +2,7 @@ import React,{useState,useEffect, useRef} from 'react'
 import Lottie from 'react-lottie'
 
 const LottiePlayer = (props) =>{
+    let {margin} = props
     let [animatableData,setAnimatableData] = useState()
     let {lottieCard,hover,factor,cardDim} = props
     let [cardWidth,setCardWidth] = useState(0)
@@ -32,11 +33,17 @@ const LottiePlayer = (props) =>{
         
     };
 
+
     return animatableData ? <Lottie 
             options={defaultOptions} 
             height={cardWidth}
             width={cardWidth}
-            isPaused={hover ? !hover : false}
+            style={{
+                margin:0,
+                marginLeft: `${margin ? `auto` : `0`}`,
+                marginRight: margin ? `auto` : `0` 
+            }}
+            // isPaused={hover ? !hover : false}
         />
         :
         <div>

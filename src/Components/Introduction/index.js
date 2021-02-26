@@ -11,6 +11,7 @@ import {
     SummaryStatement
 } from './style'
 import {ProblemStatement as Problem,SolutionStatement as Solution} from './data'
+import {useTransition} from 'react-spring'
 const Index = () => {
 
     return (
@@ -28,7 +29,7 @@ const Index = () => {
                 <IntroSection
                     heading = {"Solution"}
                     statement = {Solution}
-                    reverse={false}
+                    reverse={true}
                     mode={"light"}
                 />
             </IntroSectionTab>
@@ -42,7 +43,11 @@ const IntroSection = (props) =>{
     let [hoverCard,setHoverCard] = useState(0);
     let [selectedCard,setSelectedCard] = useState(0);
     let [showCard,setShowCard] = useState(false)
-
+    let transition = useTransition(showCard,null,{
+        from:{top:20,opacity:0},
+        enter:{top:10,opacity:1},
+        leave:{top:20,opacity:0}
+    })
     let {title:mainTitle,overview:mainOverview,textColor,mainImg,animation} = statement[0]
 
     let changeHoverCard = (id) =>{
@@ -53,7 +58,11 @@ const IntroSection = (props) =>{
 
     let changeSelectedCard = (id) =>{
         if(selectedCard != id){
-            setSelectedCard(id)
+            setSelectedCard(0)
+            setTimeout(() => {
+                setSelectedCard(id)
+            },300)
+            
         }
     }
     useEffect(() =>{
@@ -68,16 +77,27 @@ const IntroSection = (props) =>{
 
     var FallCard = () => {
         console.log('selectedCard : ',selectedCard);
-        if (selectedCard == 0) return <></>
-        let {title,overview,description,color,textColor} = statement.filter(({id}) => id == selectedCard)[0]
-        return <> 
-            <FallDownCard showCard={showCard} changeColor={color}  textColor={textColor}>
-                <h1>{title}</h1>
-                <text>{overview}</text>
-                <text>{description}</text>
+        // if (selectedCard == 0) return <></>
+        return <div> 
+            {transition.map(({item,key,props:style}) =>{
+                let {title,overview,description,color,textColor} = statement.filter(({id}) => id == selectedCard)[0]
+                return item && <FallDownCard 
+                style={{
+                    top:style.top.interpolate(t => `${t}%`),
+                    opacity:style.opacity,
+                    config:{
+                        duration: 300
+                    }
+                }}
+                showCard={showCard} changeColor={color}  textColor={textColor}>
+                <h1>{title || ""}</h1>
+                <text>{overview || ""}</text>
+                <text>{description || ""}</text>
                 <text className="button"  textColor={textColor} onClick={() => {changeSelectedCard(0)}}>Done</text>
             </FallDownCard>
-        </>
+            })}
+            
+        </div>
     } 
 
     var TopHeader = <>
