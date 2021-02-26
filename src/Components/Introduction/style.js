@@ -11,7 +11,8 @@ export const IntroTab = styled.div`
     flex-flow: column  nowrap;
     justify-content: flex-start;
     align-content: flex-start;
-    background-color: ${colors.white};
+    /* background-color: ${colors.clear}; */
+    background-color:'transparent';
     z-index: 0;
     /* *{
         z-index:0;

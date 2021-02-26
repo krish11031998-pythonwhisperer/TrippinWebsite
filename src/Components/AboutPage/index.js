@@ -32,7 +32,7 @@ const Index = () => {
             duration: 300
         }
     })
-    const timeSpan = 10;
+    const timeSpan = 600;
     
     useEffect(() => {
         setViewCard(0)

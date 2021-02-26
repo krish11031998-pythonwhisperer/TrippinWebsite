@@ -94,9 +94,7 @@ export const BGBox = styled(animated.div)`
 
 `
 export const AboutUsCurveBox = styled(animated.div)`
-    /* position:absolute; */
-    /* top:15px;
-    left:0; */
+
     z-index: 0;
     width:100%;
     height:100%;
@@ -107,25 +105,19 @@ export const AboutUsCurveBox = styled(animated.div)`
 
     border-radius: 30px;
     box-shadow: 0 0 2.5px rgba(255,255,255,${({isHover}) => isHover ? 0.1 : 0});
-    /* transform: scale(${({isHover,otherCard,view}) => isHover ? 1 : otherCard ? 0.95 : 1}); */
     padding: 20px 20px;
-    /* background:${({view,time}) => view ? `linear-gradient(to right, ${colors.secondary} ${time * 10}%,transparent ${time*10}%,transparent 100%)` : 'transparent'}; */
-    /* background-color:${({view}) => view ? `rgba(${colors.secondary.hexTorgb().reduce((res,curr) => `${res},${curr}`)},1)` : 'transparent'}; */
     background-color:${({view}) => view ? colors.secondary : 'transparent'};
 
     opacity:${({isHover,otherCard}) => isHover ? 1 : otherCard ? 0.5 : 1};
-    /* animation: ${({view,time}) => view ? time * 10 : 0} $loadingTime linear infinite; */
     transition: all .7s ease-out;
 
     *{
-        /* padding: 20px 20px; */
         padding: 10px;
     }
 
     .heading{
         font-weight: bold;
         font-size: 20px;
-        /* color:gray; */
         color:${({view}) => view ? 'white' : 'gray'};
     }
 
@@ -166,10 +158,11 @@ export const AboutDescriptBox = styled.div`
     flex: 0 1 60%;
     width:100%;
     min-height:100%;
-    height:100%;
-    max-height:100%;
+    /* height:100%; */
+    /* max-height:100%; */
     /* height:auto; */
-    padding:20px;
+    padding:0 20px;
+    padding-bottom:50px;
     /* border-radius: 30px; */
     display:flex;
     flex-flow: column nowrap;
@@ -186,7 +179,7 @@ export const AboutDescriptBox = styled.div`
     }
 
     ul{
-        flex: 0 1 auto;
+        flex: 0 1 100%;
         width:100%;
         height:100%;
         list-style:none;
@@ -196,6 +189,7 @@ export const AboutDescriptBox = styled.div`
         align-items: flex-start;
         cursor:pointer;
         transition: all 0.3s ease;
+        /* margin-bottom:20px; */
 
         li{
             flex: 0 1 30%;

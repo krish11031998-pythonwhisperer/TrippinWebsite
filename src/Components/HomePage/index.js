@@ -5,6 +5,7 @@ import Introduction from '../Introduction'
 import ImageCarousel from '../PhotosZStack'
 import AboutUs from '../AboutPage'
 import Blogs from '../Blogs'
+import MottoPage from '../MottoPage'
 const Index = () => {
     let url = 'videos/video-1.mp4'
     let img = 'images/img-1.jpg'
@@ -32,6 +33,7 @@ const Index = () => {
                 </HomeContainer>
                 
             </HomePageTab>
+            <MottoPage/>
             <AboutUs/>
             <Introduction/>
             <FeaturePage/>

@@ -4,7 +4,7 @@ import {Colors as colors,PageHeader} from '../../style'
 import data from './data'
 // import Lottie from 'react-lottie'
 import LottiePlayer from '../Helper/LottiePlayer'
-import {useSpring,animated} from 'react-spring'
+import {useSpring,animated, config} from 'react-spring'
 import { AnimatePresence, AnimateSharedLayout, motion } from 'framer-motion'
 
 const Index = () => {
@@ -146,7 +146,10 @@ const FeatureCard = (props) => {
     let [yOff,setYOff] = useState(0)
     let [cardDimension,setCardDimension] = useState(null)
     let cardRef = useRef();
-    const [spring, setSpring] = useSpring(() => ({ xys: [0, 0, 1], config: { mass: 5, tension: 350, friction: 40 } }))
+    const [spring, setSpring] = useSpring(() => ({ xys: [0, 0, 1], 
+        // config: { mass: 5, tension: 200, friction: 40 },
+        config: config.gentle  
+    }))
 
     var resetAll = () => {
         setSpring({xys: [0,0,1]})
