@@ -14,7 +14,7 @@ import {
 } from './style'
 // import {ProblemStatement as data} from '../Introduction/data'
 import {AboutUsData as data} from './data'
-import {useTransition,useSpring} from 'react-spring'
+import {useTransition,useSpring, interpolate} from 'react-spring'
 
 
 const Index = () => {
@@ -25,9 +25,9 @@ const Index = () => {
     let [time,setTime] = useState(1);
     let [info,setInfo] = useState(-1);
     let transition = useTransition(data[viewCard],d => d.id,{
-        from:{x:100,opacity:0},
-        enter:{x: 0,opacity:1},
-        leave:{x: -100,opacity:0},
+        from:{x:100,opacity:0,skewX:10},
+        enter:{x: 0,opacity:1,skewX:0},
+        leave:{x: -100,opacity:0,skewX:10},
         // config:{
         //     duration: 150
         // }
@@ -126,12 +126,18 @@ const Index = () => {
             </AboutUsRow>
             {transition.map(({item,key,props:style}) => {
                 // console.log(key)
+                let {skewX,...rest} = style
                 return item.id == viewCard && <InfoCardContent
                     key={key}
                     card={item}
                     changeInfo={(el) => {changeInfo(el)}}
                     info={info}
-                    style={style}
+                    style={{
+
+                        ...rest,
+                        transform: interpolate([skewX],(skewX) => `skewX(${skewX}deg)`)
+
+                    }}
                 />
             })}
             

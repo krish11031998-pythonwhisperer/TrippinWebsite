@@ -5,7 +5,7 @@ import {
     DemoCardWrapper,
     DemoCard
 } from './style'
-import {Colors as colors} from '../../style'
+import {Colors as colors,PageHeader} from '../../style'
 import {useSprings,animated, useSpring, interpolate} from 'react-spring'
 import {useDrag} from 'react-use-gesture'
 import clamp from 'lodash-es/clamp'
@@ -86,6 +86,7 @@ const Index = () => {
         <DemoContainer
             ref={cardRef}
         >
+            <PageHeader>Demos</PageHeader>   
             {springs.map(({display,x,scale},i) => {
                 var link = polyTravels[i]
                 return(
@@ -114,9 +115,11 @@ const Index = () => {
                                             return <li><text>{text}</text></li>
                                         })}
                                     </ul>
-                                    {/* <text>{polyCaptions[link]}</text> */}
+                                    
                                 </animated.div>
-                                
+                                <div className="footer">
+                                    <text>{"👈   Drag Me  👉"}</text>
+                                </div>
                             </DemoCol>
                         </DemoCard>
                     </DemoCardWrapper>

@@ -4,7 +4,7 @@ import {Colors as colors,PageHeader} from '../../style'
 import data from './data'
 // import Lottie from 'react-lottie'
 import LottiePlayer from '../Helper/LottiePlayer'
-import {useSpring,animated, config} from 'react-spring'
+import {useSpring,animated, config, interpolate} from 'react-spring'
 import { AnimatePresence, AnimateSharedLayout, motion } from 'framer-motion'
 import useMeasure from '../../Helpers/useMeasure'
 
@@ -96,7 +96,7 @@ const Index = () => {
         {colCards.map((pairs,idx) =>{
             var isSelected = (idx * 2 < selectedCard && selectedCard <= (idx + 1) * 2)
             var otherSelected = selectedCard != -1
-                return col(pairs,isSelected,otherSelected,idx)
+            return col(pairs,isSelected,otherSelected,idx)
             })}
     
     </>
@@ -116,7 +116,7 @@ const Index = () => {
 const ExpandedCardComponent = (props) => {
     let {card,isSelected,onClick} = props;
     return <>
-        {isSelected && <ExpandedCard
+         <ExpandedCard
             onClick={() => {onClick(-1)}}
         >
             <CardContent>
@@ -125,7 +125,7 @@ const ExpandedCardComponent = (props) => {
             </CardContent>
             {card.large && <LottiePlayer lottieCard={card.lottieCard} factor={card.factor}/>}
 
-        </ExpandedCard>}
+        </ExpandedCard>
     
     </>
 
@@ -166,8 +166,8 @@ const FeatureCard = (props) => {
     let {showMainText,xOff,yOff,cardDimension} = state
     let {card,isSelected,isHover,changeHoverCard,onClick,otherHover,otherSelected,parentDim,idx} = props
     let cardRef = useRef();
-    const [spring, setSpring] = useSpring(() => ({ xys: [0, 0, 1], 
-        config: config.gentle  
+    const [spring, setSpring] = useSpring(() => ({ x:0, y:0, s:1,
+        config: config.gentle,  
     }))
 
     var resetAll = () => {
@@ -177,15 +177,20 @@ const FeatureCard = (props) => {
     let {pageYOffset:pyoff,innerHeight,innerWidth} = window
 
     useEffect(() => {
+        if(otherSelected){
+            var s = isSelected ? 1 : 0
+            setSpring({x:0,y:0,s})
+        }
+    },[isSelected,otherSelected])
+
+    useEffect(() => {
         let el = document.getElementById(`feature-${idx}`)
         el.style.transform =  !isHover && !otherHover && `perspective(${(cardDimension ? cardDimension.height : 0) + 100}px) rotateX(0deg) rotateY(0deg) scale(1)`
     },[isHover,otherHover])
 
     useEffect(() => {
         if(cardRef.current){
-            // console.log('className : ',cardRef.current)
             var cardDim = cardRef.current.getBoundingClientRect()
-            // setCardDimension(cardDim)
             dispatch({type : 'cardDim', val:cardDim})
         }
     },[cardRef.current])
@@ -194,12 +199,10 @@ const FeatureCard = (props) => {
 
     var normalize = (val,min=-10,max=10) => {
         var res =  (max - val)/(max - min)
-        // console.log('res from normalize : ',res);
         return res
     }
 
     var changeOffsets_spring = (e) => {
-        
         let limit = 5
         let {clientX : x, clientY :y} = e
         let {width,height,top,left} = cardDimension
@@ -211,18 +214,16 @@ const FeatureCard = (props) => {
         changeHoverCard(card.id)
         xOff = (x - window_w)/20
         yOff = -(y - window_h)/20
-        // console.log('xOff_abs : ',Math.abs(xOff))
-        // console.log('yOff_abs : ',Math.abs(yOff))
         xOff = Math.abs(xOff) > 10 ? normalize(xOff) : xOff
         yOff = Math.abs(yOff) > 10 ? normalize(yOff) : yOff
-        setSpring({xys: [yOff,xOff,1]})
+        // setSpring({xys: [yOff,xOff,1]})
+        setSpring({x:yOff,y:xOff,s:1})
         
     }
 
 
     var onLeave = (e) => {
-        // console.log('OnLeave is being called!')
-        setSpring({xys: [0,0,1]})
+        setSpring({x:0,y:0,s:1})
         changeHoverCard(-1)
     }
 
@@ -240,7 +241,9 @@ const FeatureCard = (props) => {
                 onMouseLeave={onLeave}
                 onClick={() => {onClick(card.id)}}
                 isLottie={card.lottieCard != null}
-                style={{transform: spring.xys.interpolate(trans)}}
+                style={{
+                    transform: interpolate([spring.x,spring.y,spring.s],trans)
+                }}
 
             >
                 <CardContent 

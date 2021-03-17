@@ -3,10 +3,11 @@ import {animated} from 'react-spring'
 import {Colors as colors} from '../../style'
 export const DemoContainer = styled(animated.div)`
     width:100vw;
-    height: 100vh;
+    min-height: 100vh;
     padding: 10px;
     position:relative;
     overflow-x: hidden;
+    overflow-y:hidden;
 `
 
 export const DemoCard = styled(animated.div)`
@@ -14,7 +15,7 @@ export const DemoCard = styled(animated.div)`
     height: 75%;
     width: 75%;
     left: 12.5% ;
-    top: 12.5%;
+    top: 7.5%;
     display: flex;
     flex-flow: row nowrap;
     background: ${colors.tomato};
@@ -24,7 +25,7 @@ export const DemoCard = styled(animated.div)`
 
 export const DemoCardWrapper = styled(animated.div)`
     width:100%;
-    height:100%;
+    height:90%;
     position:absolute;
     cursor:pointer;
     overflow-x:hidden;
@@ -44,12 +45,20 @@ export const DemoCol = styled(animated.div)`
     .content{
         margin: 40px;
         padding:10px;
+        max-height: 90%;
         color:${colors.white};
         text{
             font-size: 17.5px;
             pointer-events:none;
+            ::selection {
+                color: none;
+                background: none;
+            }
+            ::-moz-selection {
+                color: none;
+                background: none;
+            }
         }
-
 
         ul{
             list-style: none;
@@ -57,6 +66,19 @@ export const DemoCol = styled(animated.div)`
         li{
             padding: 5px 0;
         }
+    }
+
+    .footer{
+        position: absolute;
+        top: 80%;
+        right: 10%;
+        margin: 10px 0;
+        padding: 10px;
+        color:${colors.tomato};
+        border-radius: 20px;
+        background:${colors.white};
+        width: fit-content;
+        height: fit-content;
     }
 
     .sketchfab-embed-wrapper{
