@@ -56,9 +56,9 @@ export const HomeHeading = styled.div`
 
     h1{
         font-size:55px;
-        font-family: 'Bungee Shade', cursive;
+        /* font-family: 'Bungee Shade', cursive; */
         font-weight: bolder;
-        color: ${colors.primary};
+        color: ${colors.tomato};
     }
 
 `

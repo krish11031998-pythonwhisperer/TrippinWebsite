@@ -1,4 +1,4 @@
-import React,{useState,useEffect, useRef} from 'react'
+import React,{useState,useEffect, useRef, useReducer, useCallback,useMemo} from 'react'
 import { Cards, ColumnCards, FeaturesContainer, FeaturesPageContainer,CardContent,CardOutline, ExpandedCard } from './style'
 import {Colors as colors,PageHeader} from '../../style'
 import data from './data'
@@ -6,20 +6,41 @@ import data from './data'
 import LottiePlayer from '../Helper/LottiePlayer'
 import {useSpring,animated, config} from 'react-spring'
 import { AnimatePresence, AnimateSharedLayout, motion } from 'framer-motion'
+import useMeasure from '../../Helpers/useMeasure'
 
 const Index = () => {
-    let cards = []
-    let [colCards,setColCards] = useState([])
-    let [hoverCard,setHoverCard] = useState(-1);
-    let [selectedCard,setSelectedCard] = useState(-1);
-    let [showMainText,setShowMainText] = useState(false)
-    let [cardDim,setCardDim] = useState()
-    let [reset,setReset] = useState(false)
-    let cardRef = useRef(null)
 
-    let temp = []
-    
-    useEffect(() => {
+    let initialState = {
+        hoverCard : -1,
+        selectedCard : -1,
+        showMainText : false,
+        reset: false
+    }
+
+    const reduce = (state,action) => {
+        var {type,val} = action
+        var {hoverCard,selectedCard,showMainText,reset} = state
+        switch(type){
+            case 'hover':
+                state = {...state,hoverCard : val}
+                break;
+            case 'select':
+                state = {...state,selectedCard: val}
+                break;
+            case 'reset':
+                state = {...state, reset: !reset}
+                break;
+            default:
+                console.log('Default : No appropriate log!')
+        }
+        return state
+    }
+
+    var [state,dispatch] = useReducer(reduce,initialState)
+
+    let colCards = useMemo(() => {
+        var cards = []
+        var temp = []
         data.forEach((el,idx) => {
             if(idx != 0 && idx % 2 == 0){
                 cards.push(temp)
@@ -32,30 +53,20 @@ const Index = () => {
             cards.push(temp)
             temp = []
         }
-        setColCards(cards)
-    },[])
+        return cards
+    },[data])
 
-    useEffect(() => {   
-        let {current:frame} = cardRef
-        if(frame){
-            var dim = frame.getBoundingClientRect()
-            console.log('parentDim :',dim);
-            setCardDim(dim);
-        }
-    }, [cardRef])
+    let [showMainText,setShowMainText] = useState(false)
+    let [bind,measure] = useMeasure()
+    let{hoverCard,selectedCard,reset} = state
 
-    var changeHoverCard = (id) => {
-        setHoverCard(id);
-    }
+    var changeHoverCard = useCallback((id) => {
+        dispatch({type:'hover',val:id})
+    },[hoverCard]) 
 
-    var onClick = (id) => {
-        if (selectedCard == id){
-            setSelectedCard(-1);
-        }else{
-            setSelectedCard(id)
-        }
-        
-    }
+    var onClick = useCallback((id) => {
+        dispatch({type: 'select',val: selectedCard == id ? -1 : id})
+    },[selectedCard])
 
 
     let col = (pairs,isSelected,otherSelected,_idx) => {
@@ -65,7 +76,7 @@ const Index = () => {
                 var isHover = hoverCard == el.id
                 var card = <FeatureCard
                     idx={idx + 2 * _idx}
-                    parentDim={cardDim}
+                    parentDim={measure}
                     card={el}
                     isSelected={isSelected}
                     otherSelected={selectedCard != -1}
@@ -75,10 +86,7 @@ const Index = () => {
                     onClick={onClick}
                     hoverCard={hoverCard}
                 />
-                // if (selectedCard == -1 || isSelected){
                     return card
-                // }
-                 
             })}
         </ColumnCards>)
         
@@ -88,38 +96,25 @@ const Index = () => {
         {colCards.map((pairs,idx) =>{
             var isSelected = (idx * 2 < selectedCard && selectedCard <= (idx + 1) * 2)
             var otherSelected = selectedCard != -1
-                // if (selectedCard == -1 || isSelected){
-                    return col(pairs,isSelected,otherSelected,idx)
-                // }
+                return col(pairs,isSelected,otherSelected,idx)
             })}
     
     </>
 
     return (
-        <FeaturesPageContainer id="featurePage" ref={cardRef}>
+        <FeaturesPageContainer id="featurePage" 
+            {...bind}
+        >
             <PageHeader>Features</PageHeader>
-                <FeaturesContainer onMouseEnter={() => reset && setReset(reset => !reset)} onMouseLeave={() => !reset && setReset(reset => !reset)}>
+            <FeaturesContainer onMouseEnter={() => reset && dispatch({type : 'reset'})} onMouseLeave={() => !reset && dispatch({type : 'reset'})}>
                     {colData}
                 </FeaturesContainer>
-            {/* <AnimateSharedLayout>
-                <FeaturesContainer>
-                    {colData}
-                </FeaturesContainer>
-                <AnimatePresence>
-                    {selectedCard && <ExpandedCardComponent card={data.filter(el=> el.id == selectedCard)} onClick={onClick} isSelected={selectedCard != -1} />}
-                </AnimatePresence>
-            </AnimateSharedLayout> */}
-            
         </FeaturesPageContainer>
     )
 }
 
 const ExpandedCardComponent = (props) => {
     let {card,isSelected,onClick} = props;
-
-    useEffect(() => {
-        console.log('CardData is :',card)
-    }, [card])
     return <>
         {isSelected && <ExpandedCard
             onClick={() => {onClick(-1)}}
@@ -140,14 +135,38 @@ const ExpandedCardComponent = (props) => {
 
 const FeatureCard = (props) => {
 
+    var initialState = {
+        showMainText : false,
+        xOff:0,
+        yOff:0,
+        cardDimension:null
+    }
+
+    const reducer = (state,action) => {
+        var {type,val} = action 
+        var {showMainText} = state
+        switch(type){
+            case 'mainText':
+                state = {...state,showMainText : !showMainText}
+                break;
+            case 'xy':
+                var [x,y] = val
+                state = {...state,xOff:x,yOff:y}
+                break;
+            case 'cardDim':
+                state = {...state,cardDimension : val}
+                break;
+            default:
+                console.log('Default Val!')
+        }
+        return state
+    }
+
+    var [state,dispatch] = useReducer(reducer,initialState)
+    let {showMainText,xOff,yOff,cardDimension} = state
     let {card,isSelected,isHover,changeHoverCard,onClick,otherHover,otherSelected,parentDim,idx} = props
-    let [showMainText,setShowMainText] = useState(false)
-    let [xOff,setXOff] = useState(0)
-    let [yOff,setYOff] = useState(0)
-    let [cardDimension,setCardDimension] = useState(null)
     let cardRef = useRef();
     const [spring, setSpring] = useSpring(() => ({ xys: [0, 0, 1], 
-        // config: { mass: 5, tension: 200, friction: 40 },
         config: config.gentle  
     }))
 
@@ -166,19 +185,21 @@ const FeatureCard = (props) => {
         if(cardRef.current){
             // console.log('className : ',cardRef.current)
             var cardDim = cardRef.current.getBoundingClientRect()
-            setCardDimension(cardDim)
+            // setCardDimension(cardDim)
+            dispatch({type : 'cardDim', val:cardDim})
         }
-    },[cardRef.current,isSelected])
+    },[cardRef.current])
 
     var lottieCard = card.large && card.lottieCard && <LottiePlayer margin={true} lottieCard={card.lottieCard} factor={card.factor} cardDim={cardDimension}/>
 
     var normalize = (val,min=-10,max=10) => {
-        var res =  (val - min)/(max - min)
-        console.log('res from normalize : ',res);
-        return Math.abs(res) >= 1 || Math.abs(res) <= 0 ? res : res < 0 ? -1 : 1 
+        var res =  (max - val)/(max - min)
+        // console.log('res from normalize : ',res);
+        return res
     }
 
     var changeOffsets_spring = (e) => {
+        
         let limit = 5
         let {clientX : x, clientY :y} = e
         let {width,height,top,left} = cardDimension
@@ -190,16 +211,17 @@ const FeatureCard = (props) => {
         changeHoverCard(card.id)
         xOff = (x - window_w)/20
         yOff = -(y - window_h)/20
-        // xOff = Math.abs(xOff) <= 10 ? xOff : 10 * xOff < 0 ? -1 : 1
-        // yOff = Math.abs(yOff) <= 10 ? yOff : 10 * yOff < 0 ? -1 : 1
-        xOff = Math.abs(xOff) > 10 ? normalize(xOff) * 10 : xOff
-        yOff = Math.abs(yOff) > 10 ? normalize(yOff) * 10 : yOff
+        // console.log('xOff_abs : ',Math.abs(xOff))
+        // console.log('yOff_abs : ',Math.abs(yOff))
+        xOff = Math.abs(xOff) > 10 ? normalize(xOff) : xOff
+        yOff = Math.abs(yOff) > 10 ? normalize(yOff) : yOff
         setSpring({xys: [yOff,xOff,1]})
+        
     }
 
 
     var onLeave = (e) => {
-        console.log('OnLeave is being called!')
+        // console.log('OnLeave is being called!')
         setSpring({xys: [0,0,1]})
         changeHoverCard(-1)
     }
@@ -210,12 +232,10 @@ const FeatureCard = (props) => {
                 id={`feature-${idx}`}
                 ref = {cardRef}
                 large={card.large} 
-                color={card.color} 
+                color={colors.tomato} 
                 hover={isHover} 
                 selectedCard={isSelected}
                 otherSelected={otherSelected}
-                // xOff={spring.xys[0]}
-                // yOff={spring.xys[1]}
                 onMouseMove={changeOffsets_spring}
                 onMouseLeave={onLeave}
                 onClick={() => {onClick(card.id)}}
@@ -224,7 +244,6 @@ const FeatureCard = (props) => {
 
             >
                 <CardContent 
-                    // style={{ transform: spring_props.xys.interpolate(trans)}}
                     isText={true} 
                     selected={isSelected}
                 >
@@ -236,16 +255,6 @@ const FeatureCard = (props) => {
                 {isSelected && <CardContent isText={false} selected={isSelected}>{lottieCard}</CardContent>}
     
             </Cards>
-
-    // return <CardOutline
-    //         large={card.large} 
-    //         color={card.color}
-    //         onMouseMove={changeOffsets_spring}
-    //             // onMouseEnter={(e) => {changeHoverCard(true)}}
-    //             onMouseLeave={onLeave}
-    //         >
-    //     {mainCard}
-    // </CardOutline>
     return mainCard
 }
 

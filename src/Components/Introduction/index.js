@@ -12,18 +12,29 @@ import {
 } from './style'
 import {ProblemStatement as Problem,SolutionStatement as Solution} from './data'
 import {useTransition} from 'react-spring'
+import {useScroll} from 'react-use-gesture'
+import useMeasure from '../../Helpers/useMeasure'
 const Index = () => {
+    const myRef = useRef(null)
+    let [measureBind,measure] = useMeasure()
+    var bind = useScroll((values) => {
+        console.log(values)
+        console.log(measure)
+    },{domTarget:window,eventOptions:{passive:false}})
 
     return (
-        <IntroTab>
-            <IntroSectionTab dir={"top"} colorone={colors.secondary} colortwo={colors.secondary}>
-                <IntroSection 
-                    heading={"Problem"} 
-                    statement={Problem}
-                    reverse={false}
-                    mode={"dark"}
-                />
-            </IntroSectionTab>
+        <IntroTab >
+            <div {...measureBind}>
+                <IntroSectionTab dir={"top"} colorone={colors.secondary} colortwo={colors.secondary}>
+                    <IntroSection 
+                        heading={"Problem"} 
+                        statement={Problem}
+                        reverse={false}
+                        mode={"light"}
+                    />
+                </IntroSectionTab>
+            </div>
+            
             
             <IntroSectionTab dir={"top"} colorone={colors.white} colortwo={colors.white}>
                 <IntroSection
@@ -46,7 +57,7 @@ const IntroSection = (props) =>{
     let transition = useTransition(showCard,null,{
         from:{top:20,opacity:0},
         enter:{top:10,opacity:1},
-        leave:{top:20,opacity:0}
+        leave:{top:-20,opacity:0}
     })
     let {title:mainTitle,overview:mainOverview,textColor,mainImg,animation} = statement[0]
 
@@ -68,7 +79,7 @@ const IntroSection = (props) =>{
     useEffect(() =>{
         
         if (selectedCard != 0){
-            console.log(selectedCard)
+            // console.log(selectedCard)
             setShowCard(true)
         }else{
             setShowCard(false)
@@ -76,8 +87,6 @@ const IntroSection = (props) =>{
     },[selectedCard])
 
     var FallCard = () => {
-        console.log('selectedCard : ',selectedCard);
-        // if (selectedCard == 0) return <></>
         return <div> 
             {transition.map(({item,key,props:style}) =>{
                 let {title,overview,description,color,textColor} = statement.filter(({id}) => id == selectedCard)[0]
@@ -102,14 +111,10 @@ const IntroSection = (props) =>{
 
     var TopHeader = <>
         <h1 className="header">{mainTitle}</h1>
-        {/* {selectedCard == 0 ?  */}
             <SummaryStatement textColor={textColor} hideCard={selectedCard != 0} reverse={reverse}>
                 <text>{mainOverview}</text> 
                 <LottiePlayer lottieCard={animation} factor={0.25}></LottiePlayer>
             </SummaryStatement>
-            {/* :
-            <></>
-        }  */}
     </>
 
     return <> 
@@ -162,7 +167,6 @@ const StatementRowCard = (props) => {
         let {clientX : x, clientY :y} = e
         let {width,height,top,left} = cardDimension
         let {pageYOffset:pyoff,innerHeight} = window
-        console.log(`top : ${top} and innerHeight : ${innerHeight}`);
         let window_w = width/2
         let window_h = height/2
         let _top = top > innerHeight ? top - pyoff : top

@@ -1,5 +1,17 @@
 import styled,{createGlobalStyle}from 'styled-components'
 import {Link} from 'react-router-dom'
+export const Colors = {
+    primary:'#abaab8',
+    secondary:'#212334',
+    green:'#69ae6f',
+    orange:'#e69d37',
+    red:'#f44336',
+    white:'#FEFAEC',
+    cyan:'#A9EEE6',
+    tomato:'#F38181',
+    indigo:'#625772',
+    clear:'#00FFFFFF'
+}
 export const GlobalStyle = createGlobalStyle`
     @import url('https://fonts.googleapis.com/css?family=Montserrat:400,900|Roboto');
     *{
@@ -7,10 +19,17 @@ export const GlobalStyle = createGlobalStyle`
         margin:0;
         padding: 0;
         font-family: 'Zilla Slab', serif;
-        
+        max-width: 100vw;
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        /* overflow-x: hidden; */
+        /* overflow-y:hidden; */
         @media screen and (max-width:960px){
-            overflow-x: hidden;
-            overflow-y: hidden;
+            /* overflow-x: hidden;
+            overflow-y: hidden; */
         }
     }
 
@@ -26,12 +45,12 @@ export const PageHeader = styled.div`
     height:auto;
     /* max-height: 10%; */
     font-size: 40px;
-    font-family: 'Bungee Shade',cursive;
+    /* font-family: 'Bungee Shade',cursive; */
     align-self: flex-start;
     padding: 25px;
     background-color:black;
     border-radius: 40px;
-    color:white;
+    color:${Colors.tomato};
 `
 
 export const Container = styled.div`
@@ -40,18 +59,7 @@ export const Container = styled.div`
     padding: 1px 0;
 `
 
-export const Colors = {
-    primary:'#abaab8',
-    secondary:'#212334',
-    green:'#69ae6f',
-    orange:'#e69d37',
-    red:'#f44336',
-    white:'#FEFAEC',
-    cyan:'#A9EEE6',
-    tomato:'#F38181',
-    indigo:'#625772',
-    clear:'#00FFFFFF'
-}
+
 
 export const Button = styled(Link)`
     height: auto;

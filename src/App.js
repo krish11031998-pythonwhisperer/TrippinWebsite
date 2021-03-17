@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect, useReducer } from 'react'
 import {Route, BrowserRouter  as Router, Switch} from 'react-router-dom'
 import HomePage from './Components/HomePage';
 import FeaturesPage from './Components/FeaturesPage'
 import Introduction from './Components/Introduction'
 import NavBar from './Components/NavBar/NavBar'
 import { GlobalStyle } from './style';
+import firebase from  './firebase'
 
 String.prototype.hexTorgb = function(){
   let hex = this.toLowerCase()
@@ -23,18 +24,54 @@ String.prototype.hexTorgb = function(){
   ] : null;
 }
 
+export const PostContext = React.createContext()
 
 function App() {
+  const initialState = {
+    images: []
+  }
+  const reducer = (state,action) => {
+    let {type,val} = action
+    switch(type){
+      case "images":
+        if(val) state = {...state,images:val}
+        break;
+      default:
+        console.log('Default Case!')
+    }
+    return state
+  }
+  const [state,dispatch] = useReducer(reducer,initialState);
+  const ref = firebase.firestore().collection("posts")
+
+  var getImages = () => {
+    ref.onSnapshot((querySnapshot) => {
+      const items = []
+      var count = 0
+      querySnapshot.forEach(queryDocument => {
+        items.push({id:count++,post:queryDocument.data()})
+      })
+      console.log('items : ',items)
+      items.length > 0 && dispatch({type:'images',val:items})
+    })
+  }
+  
+  useEffect(() => {
+      if(state.images.length == 0) getImages()
+  },[])
   return (
-    <Router>
-      <GlobalStyle/>
-        <NavBar/>
-        <Switch>
-            <Route path='/' exact component={HomePage}/>
-            <Route path='/intro' exact component={Introduction}/>
-            <Route path='/features' exact component={FeaturesPage}/>
-        </Switch>
-    </Router>
+    <PostContext.Provider value={{mainStates: state, mainStateDispatch: dispatch}}>
+      <Router>
+        <GlobalStyle/>
+          <NavBar/>
+          <Switch>
+              <Route path='/' exact component={HomePage}/>
+              <Route path='/intro' exact component={Introduction}/>
+              <Route path='/features' exact component={FeaturesPage}/>
+          </Switch>
+      </Router>
+    </PostContext.Provider>
+    
   );
 }
 

@@ -42,7 +42,8 @@ export const IntroSectionTab = styled.div`
     /* height: 100vh; */
     position:relative;
     height:100%;
-    background: ${({colorone,colortwo,dir}) => `linear-gradient(to ${dir},${colorone},${colortwo})`};
+    /* background: ${({colorone,colortwo,dir}) => `linear-gradient(to ${dir},${colorone},${colortwo})`}; */
+    background-color:${colors.secondary};
     display:flex;
     flex-flow: column nowrap;
     .header{
@@ -52,12 +53,12 @@ export const IntroSectionTab = styled.div`
         height:auto;
         /* max-height: 10%; */
         font-size: 40px;
-        font-family: 'Bungee Shade',cursive;
+        /* font-family: 'Bungee Shade',cursive; */
         align-self: flex-start;
         padding: 25px;
         background-color:black;
         border-radius: 30px;
-        color:white;
+        color:${colors.tomato};
     }
     transition: all 0.3s ease-in-out;
 `

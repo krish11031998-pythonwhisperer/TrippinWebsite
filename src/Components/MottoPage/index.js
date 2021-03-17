@@ -13,7 +13,7 @@ const Index = () => {
     let [images,setImages] = useState(imgs.map((el,idx) => ({id:idx,img:{image:[el]}})))
     let ref = firebase.firestore().collection("posts")
     let transition = useTransition(images[index],item => item.id,{
-        from:{opacity:0,scale:1.1},
+        from:{opacity:0,scale:1.05},
         enter:{opacity:1,scale:1},
         leave:{opacity:0,scale:0.9}
     })
@@ -33,7 +33,7 @@ const Index = () => {
         if(loading){
             setInterval(() => {
                 setIndex(idx => {
-                    console.log(`images.length : ${images.length} and idx : ${index}`)
+                    // console.log(`images.length : ${images.length} and idx : ${index}`)
                     return idx < images.length - 1 ? idx + 1 : 0
                 })
             },5000)

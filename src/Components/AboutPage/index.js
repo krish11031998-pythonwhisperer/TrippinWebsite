@@ -21,24 +21,27 @@ const Index = () => {
     let [hoverIdx,setHoverIdx] = useState(-1)
     let [selectedIdx,setSelectedIdx] = useState(-1)
     let [onCard,toggleCard] = useState(false)
-    let [viewCard,setViewCard] = useState(null)
+    let [viewCard,setViewCard] = useState(0)
     let [time,setTime] = useState(1);
     let [info,setInfo] = useState(-1);
-    let transition = useTransition(viewCard != null,null,{
+    let transition = useTransition(data[viewCard],d => d.id,{
         from:{x:100,opacity:0},
         enter:{x: 0,opacity:1},
         leave:{x: -100,opacity:0},
-        config:{
-            duration: 300
-        }
+        // config:{
+        //     duration: 150
+        // }
     })
-    const timeSpan = 600;
+    const timeSpan = 60;
     
     useEffect(() => {
-        setViewCard(0)
-        setInterval(() => {
+        var interval = setInterval(() => {
             setTime(time => time + 1)
         },1000);
+
+        return (() => {
+            clearInterval(interval)
+        })
     },[])
 
     useEffect(() => {
@@ -51,17 +54,16 @@ const Index = () => {
 
     var changeViewCard = (el) => {
         console.log('selected EL : ',el)
-        var current = viewCard
-        setViewCard(null)
-        setTimeout(() => {
+        // var current = viewCard
+        // setTimeout(() => {
             if(el || el == 0){
                 console.log('Setting to el')
                 setViewCard(el)
             }else{
                 console.log('Setting to the next Card')
-                setViewCard(current < data.length - 1 ? current + 1 : 0)
+                setViewCard(current => current < data.length - 1 ? current + 1 : 0)
             }
-        },300)
+        // },200)
         
     }
 
@@ -98,10 +100,7 @@ const Index = () => {
             setTimeout(() => {
                 setInfo(el)
             },300)
-        }else if(info == el){
-            setInfo(-1)
-        }
-        
+        }        
     }
 
     var currentViewCard = data[viewCard]
@@ -110,12 +109,12 @@ const Index = () => {
         <AboutUsContainer>
             <PageHeader>About Us</PageHeader>
             <AboutUsRow>
-                {data.map((el,idx) =>{
+                {data.map((el) =>{
                     return <AboutUsRowBox
                         timeSpan={timeSpan}
                         cardData={el}
-                        idx={idx}
-                        hover={hoverIdx == idx}
+                        // idx={idx}
+                        hover={hoverIdx == el.id}
                         otherCard={hoverIdx != -1}
                         viewCard={viewCard}
                         onMouseHover={onMouseHover}
@@ -126,18 +125,15 @@ const Index = () => {
                 })}
             </AboutUsRow>
             {transition.map(({item,key,props:style}) => {
-                return item && currentViewCard && <InfoCardContent
-                    card={currentViewCard}
+                // console.log(key)
+                return item.id == viewCard && <InfoCardContent
+                    key={key}
+                    card={item}
                     changeInfo={(el) => {changeInfo(el)}}
                     info={info}
                     style={style}
                 />
             })}
-            {/* {currentViewCard && <InfoCardContent
-                        card={currentViewCard}
-                        changeInfo={(el) => {changeInfo(el)}}
-                        info={info}
-                    />} */}
             
         </AboutUsContainer>
     )
@@ -203,7 +199,8 @@ const InfoCardContent = props => {
 }
 
 const AboutUsRowBox = props => {
-    let {cardData,idx,hover,otherCard,viewCard,onMouseHover,time,timeSpan,onClick} = props
+    let {cardData,hover,otherCard,viewCard,onMouseHover,time,timeSpan,onClick} = props
+    let {id : idx} = cardData
     let cardRef = useRef()
     let [clientHeight,setClientHeight] = useState(0)
     let [cardDim,setCardDim] = useState({})
@@ -238,19 +235,11 @@ const AboutUsRowBox = props => {
                 view={viewCard == idx} 
                 style={{
                     transform: fade.x
-                    // .interpolate({
-                    //     range: [0, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 1],
-                    //     output: [1, 0.97, 0.9, 1.1, 0.9, 1.1, 1.03, 1]
-                    // })
                     .interpolate(x => `scale(${x})`),
-                    // opacity:fade.opacity,
-                    // backgroundColor:fade.backgroundColor
-                    
-
                 }}
                 onClick={_onClick}
             >
-                <text className="heading">{cardData.title}</text>
+                <text className="_heading">{cardData.title}</text>
                 <BGBox 
                     style={{
                         width: fade.width.interpolate(x => `${x}%`)

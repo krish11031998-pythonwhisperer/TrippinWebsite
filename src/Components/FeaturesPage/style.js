@@ -31,7 +31,6 @@ export const ColumnCards = styled.div`
     justify-content:space-between;
     align-items:center;
     transition: all 0.75s ease-in-out;
-    /* perspective: 600px; */
 `
 
 export const CardOutline = styled.div`
@@ -104,6 +103,7 @@ export const Cards = styled(animated.div)`
     padding:10px;
     /* width:calc(100% - margin*2); */
     width:${({selectedCard,otherSelected}) => selectedCard ? 100 : !otherSelected ? 100 : 0}%;
+    max-width: calc(100% - 20px);
     /* width:100%; */
     display:flex;
     flex-flow: row nowrap;
@@ -114,16 +114,11 @@ export const Cards = styled(animated.div)`
     background-color:${({color,hover,selectedCard}) => hover || selectedCard ? color : colors.primary};
     border-radius: 30px;
     color: white;
-    box-shadow: 0 0 20px rgba(255,255,255,${({hover}) => hover ? 0.2 : 0});
+    box-shadow: 0 0 5px rgba(255,255,255,${({hover}) => hover ? 0.2 : 0});
     transition: all 0.3s ease-in;
     padding:20px;
     opacity: ${({hover,otherCard}) => !hover && otherCard ? 0.5 : 1};
-    /* will-change:transform; */
     transform : scale(${({hover,otherCard,selectedCard}) => hover || selectedCard ? 1 : otherCard && 0.9}) rotateX(${({yOff,hover,selectedCard}) => hover && !selectedCard ? yOff : 0}deg) rotateY(${({xOff,hover,selectedCard}) => hover && !selectedCard ? xOff : 0}deg);
-    /* transform :  rotateX(${({yOff,hover,selectedCard}) => hover && !selectedCard ? yOff : 0}deg) rotateY(${({xOff,hover,selectedCard}) => hover && !selectedCard ? xOff : 0}deg); */
-    /* transform : scale(${({hover,otherCard,selectedCard}) => hover && !selectedCard ? 1.05 : otherCard ? 0.9 : 1}); */
-    /* transform-style: preserve-3d; */
-    /* perspective: 1000px; */
     *:not(Lottie){
         padding: 10px;
     }
@@ -180,7 +175,7 @@ export const ExpandedCard = styled(motion.div)`
 export const CardContent = styled.div`
     flex: 0 1 ${({isText,selected}) => selected ? isText ? 75 : 25 : isText ? 100 : 0}%;
     height:fit-content;
-    max-height:60%;
+    max-height:100%;
     padding: 10px ${({isText,selected}) => selected && isText ? 10 : 0}px 0 ${(({isText,selected}) => selected && !isText ? 10 : 0)}px;
     flex-flow:column nowrap;
     justify-content:flex-start;

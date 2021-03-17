@@ -6,6 +6,7 @@ import {
 } from './style'
 import firebase from '../../firebase'
 import {useSpring} from 'react-spring'
+import TopBlogs from './topBlogs'
 const Index = () => {
     let [blogs,setBlogs] = useState(null)
     let [loading,setLoading] = useState(false)
@@ -16,7 +17,13 @@ const Index = () => {
         ref.onSnapshot((querySnapshot) => {
             console.log('querySnapshot : ',querySnapshot);
             const items = []
-            querySnapshot.forEach((el,idx) => {items.push(el.data())})
+            var count = 0
+            querySnapshot.forEach(el => {
+                var res = {id:count,blog:el.data()}
+                count += 1
+                console.log(`idx : ${count} blog : `,res)
+                items.push(res)
+            })
             console.log(items)
             items.length > 0 && setBlogs(items.slice(0,3))
             setLoading(false)
@@ -31,8 +38,10 @@ const Index = () => {
 
     return (
         <BlogContainer>
+            {/* {blogs && <TopBlogs blogs={blogs}/>} */}
             <BlogRowContainer>
                 {blogs && blogs.map(blog => {
+                    console.log(blog)
                     return <BlogCardComponent
                         {...blog}
                     />
@@ -44,7 +53,8 @@ const Index = () => {
 
 
 const BlogCardComponent = props => {
-    let{headline,location,summaryText,image} = props
+    let {id,blog} = props
+    let{headline,location,summaryText,image} = blog
     let [hover,setHover] = useState(false)
     let fade = useSpring({
         scale: hover ? 1.1 : 1,
