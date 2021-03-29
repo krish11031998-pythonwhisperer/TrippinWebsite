@@ -8,6 +8,14 @@ export const DemoContainer = styled(animated.div)`
     position:relative;
     overflow-x: hidden;
     overflow-y:hidden;
+    /* ::selection {
+        color: none;
+        background: none;
+    }
+    ::-moz-selection {
+        color: none;
+        background: none;
+    } */
 `
 
 export const DemoCard = styled(animated.div)`
@@ -86,7 +94,9 @@ export const DemoCol = styled(animated.div)`
         iframe{
             width: 100%;
             height: 100%;
-            border-radius: 20px;        
+            /* border-radius: 20px;         */
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
         }
 
         p{

@@ -8,6 +8,7 @@ import Blogs from '../Blogs'
 import MottoPage from '../MottoPage'
 import ExplorationPage from '../Exploration'
 import Demo from '../Demo'
+import AppDemo from '../AppDemo'
 const Index = () => {
     let url = 'videos/video-1.mp4'
     let img = 'images/img-1.jpg'
@@ -37,12 +38,11 @@ const Index = () => {
             </HomePageTab>
             <MottoPage/>
             <ExplorationPage/>
+            <AppDemo/>
             <AboutUs/>
-            {/* <Introduction/> */}
             <FeaturePage/>
             <Demo/>
             <Blogs/>
-            {/* <AboutUs/> */}
         </>
         
     )
